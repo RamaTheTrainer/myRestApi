@@ -1,0 +1,25 @@
+{
+  "name": "myrestapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RamaTheTrainer/myRestApi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RamaTheTrainer/myRestApi/issues"
+  },
+  "homepage": "https://github.com/RamaTheTrainer/myRestApi#readme",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.3",
+    "express": "^4.8.8",
+    "pg-promise": "^8.4.5"
+  }
+}

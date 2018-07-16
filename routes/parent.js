@@ -14,5 +14,17 @@ router.use(bodyparser.json());
 
 var pgp = require('pg-promise')(options)
 var cs = 'postgres://postgres:root@192.168.0.238:5432/infobyt'
+/* team4 start*/
+// retrieving schoolfeedback details by using schlid //
+router.get('/schfeedback/school/:shlid', (req, res, next) => {
+    var db = pgp(cs);
+
+    var j = req.params.shlid;
+    db.any('select * from fn_getbyschoolid_schoolfeedback($1)', [j]).then((data) => {
+        res.send(data);
+    })
+    pgp.end()
+})
+/* team4 end*/
 
 module.exports = router ;

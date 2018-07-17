@@ -480,52 +480,9 @@ router.post('/timetable',(req,res,next)=>{
         pgp.end()
     })
 
-    router.get('/',(req,res,next)=>{
-        var db=pgp(cs)
-        db.any('select * from fn_getall_studentdetails()').then((data)=>{
-            res.send(data)
-        })
-        pgp.end()
-    })
+    
 
-    router.post('/',(req,res,next) => {
-        var db=pgp(cs)
-        ssid = req.body.s_stdschid;
-        ssbid =req.body.s_stdschbrnid
-        sfn = req.body.s_stdfname
-        sln = req.body.s_stdlname
-        sam = req.body.s_stdadmissionnum
-        sdob =req.body.s_stddob
-        sg=req.body.s_stdgender
-        sfan = req.body.s_stdfathername
-        smon =req.body.s_stdmothername 
-        sfo=req.body.s_stdfatheroccupation
-        sc =req.body.s_stdcaste
-        ssc=req.body.s_stdsubcaste
-        sr=req.body.s_stdreligion
-        sn =req.body.s_stdnationality
-        sem=req.body.s_stdemail
-        sc=req.body.s_stdcountry
-        ss =req.body.s_stdstate
-        sci =req.body.s_stdcity
-        sa =req.body.s_stdaddress
-        sadhr =req.body.s_stdaadhar
-        simg =req.body.s_stdimage
-        scn1 =req.body.s_stdcontactnum1
-        scn2 =req.body.s_stdcontactnum2
-        ss =req.body.s_stdstatus
-        
-      
     
-    
-         db.any('select  fn_Add_Studentdetails($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24)',
-          [
-            ssid, ssbid,sfn ,sln,sam ,sdob,sg,sfan ,smon ,sfo,sc ,ssc,sr,sn,sem,sc,ss,sci,sa ,sadhr ,simg ,scn1 ,scn2 ,ss ]).then(() => {
-            res.send('record Inserted Succexxx...');
-    
-        })
-        pgp.end();
-    })
     // to return school_branch get all details
 router.get('/schbrn', (req, res, next) => {
     var db = pgp(cs);
@@ -956,4 +913,524 @@ router.put('/faculty/:facid', (req, res, next) => {
     pgp.end();
 })
 /********************************************TEAM3-end************************************** */
+
+
+/*******************************Team 1 start*************************** */
+
+
+//for getting all bus details 
+router.get('/busmaster', (req, res, next) => {
+    var db = pgp(cs);
+
+    db.any('select * from fn_GetAll_busdrivermaster()').then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+//getting  bus details by busid
+router.get('/busmaster/:BdaBusId', (req, res, next) => {
+    var db = pgp(cs);
+
+    var i = req.params.BdaBusId
+
+    db.any('select * from fn_Get_busdrivermaster_bybdabusid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+
+
+// add or allocating the bus driver to bus  
+router.post('/busmaster', (req, res, next) => {
+    var db = pgp(cs);
+
+    bdid = req .body.a_bdabusid;
+    bddrid = req.body.a_bdadrvid;
+    bddate = req.body.a_bdadate;
+    
+
+
+    db.any('select fn_add_busdrivermaster($1,$2,$3)',[bdid, bddrid, bddate]).then(() => {
+        res.send({ "message": "record Inserted Success..." })
+    })
+    pgp.end()
+})
+
+
+
+
+ // updating the bus driver details using bus id
+ router.put('/busmaster/:a_bdabusid', (req, res, next) => {
+    var db = pgp(cs);
+
+    var i = req.params.a_bdabusid;
+    bddrid = req.body.a_bdadrvid;
+    bddate = req.body.a_bdadate;
+    
+    db.any(
+        'select fn_Upd_busdrivermaster($1,$2,$3)', [i, bddrid, bddate]).then(() => {
+            res.send({ "message": "Update success.." })
+        })
+        pgp.end();
+})
+
+//*************************driver information******************************** */
+
+//getting all driver information
+router.get('/driver', (req, res, next) => {
+    var db = pgp(cs);
+    db.any('select * from fn_GetAll_driverinfo()').then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+
+// getting  driver details by driver id
+router.get('/driver/:drvid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.drvid
+
+    db.any('select * from fn_Get_driverinfo_bydrvid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+    pgp.end();
+})
+
+
+//adding the drivers details
+
+router.post('/driver', (req, res, next) => {
+    var db = pgp(cs);
+    /* drvid = req.body.drvid; */
+    drvn = req.body.a_drvname;
+    drvd = req.body.a_drvdob;
+    drva = req.body.a_drvaddress;
+    drvc1 = req.body.a_drvcontact1;
+    drvc2 = req.body.a_drvcontact2;
+    drvi= req.body.a_drvimage;
+    drvl = req.body.a_drvlicencenum;
+   
+
+    db.any('select fn_Add_driverinfo($1,$2,$3,$4,$5,$6,$7)', [drvn, drvd,drva,drvc1,drvc2,drvi,drvl]).then(() => {
+        res.send({ "message": "record Inserted Succexxx..." })
+    })
+    pgp.end();
+})
+
+
+
+// updating the driver details by driverid 
+
+router.put('/driver/:drvid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.drvid;
+
+    drvN = req.body.a_drvname;
+    drvD= req.body.a_drvdob;
+    drvA = req.body.a_drvaddress;
+    drvC2 = req.body.a_drvcontact1;
+    drvC1 = req.body.a_drvcontact2;
+    drvI = req.body.a_drvimage;
+    drvL = req.body.a_drvlicencenum;
+    
+    db.any(
+        'select fn_Upd_driverinfo_bydrvid($1,$2,$3,$4,$5,$6,$7,$8)', [i, drvN, drvD,drvA,drvC2,drvC1,drvI,drvL]).then(() => {
+            res.send({ "message": "Update success.." })
+        })
+        pgp.end();
+})
+//***************************school class master********************************* */
+//getting all class details of school
+router.get('/schclass', (req, res, next) => {
+    var db = pgp(cs);
+    db.any('select * from fn_GetAll_Classdetails()').then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+
+//getting class details by using class id
+router.get('/schclass/class/:clsid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.clsid
+    db.any('select * from fn_Get_Classdetails_by_Clsid($1)', i)
+        .then(function (data) {
+            res.send(data);
+        })
+        pgp.end();
+})
+
+
+//getting class details by using branch id
+router.get('/schclass/branch/:brnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnid
+    db.any('select * from fn_Get_Classdetails_by_Brnid($1)', i)
+        .then(function (data) {
+            res.send(data);
+        })
+        pgp.end();
+})
+
+
+// getting class details by using school id
+router.get('/schclass/school/:schid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.schid
+    db.any('select * from fn_Get_Classdetails_by_Schid($1)', i)
+        .then(function (data) {
+            res.send(data);
+        })
+        pgp.end();
+})
+
+
+// adding class details for schools
+router.post('/schclass', (req, res, next) => {
+    var db = pgp(cs);
+    console.log(req.body);
+    var si = req.body.c_schid;
+    var bi = req.body.c_brnid;
+    var cn = req.body.c_clsname;
+    var cm = req.body.c_clsmedium;
+    db.any('select fn_Add_Classdetails($1,$2,$3,$4)',[si,bi,cn,cm])
+ .then(function () {
+            res.status(200).send({"message" : "insertEd Succes..."});
+        })
+        pgp.end();   
+})
+
+// updating class details by class id 
+router.put('/schclass/:c_cid',(req,res,next)=>{
+    var db = pgp(cs);
+    var ci = req.params.c_cid;
+    var cn = req.body.c_clsname;
+    var cm = req.body.c_clsmedium;
+
+
+    db.any('select fn_Upd_Classdetails_by_Clsid($1,$2,$3)',[ci,cn,cm])
+    .then(function(){
+        res.status(200).send({message:"Updated Succes...."})
+    })
+    pgp.end();
+})
+
+//***********************student details***************************** */
+// getting all student details of school
+router.get('/student', (req, res, next) => {
+    var db = pgp(cs);
+    db.any('select * from fn_GetAll_Studentdetails() ').then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// getting student details by student id
+router.get('/student/:stdid', (req, res, next) => { 
+    var db = pgp(cs);
+    var i = req.params.stdid
+    console.log(i)
+    db.any('select * from fn_Get_StudentDetails_By_StId($1) ', i)
+        .then((data) => {
+            console.log(data)
+            res.send(data);
+        })
+        pgp.end();
+})
+
+//getting  student details by branch id
+router.get('/student/branch/:brnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnid
+    console.log(i)
+    db.any('select * from fn_Get_StudentDetails_By_Brnid($1) ', i)
+        .then((data) => {
+            console.log(data)
+            res.send(data);
+        })
+        pgp.end();
+})
+//getting student details by school id
+router.get('/student/school/:schid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.schid
+    console.log(i)
+    db.any('select * from fn_Get_StudentDetails_By_schid($1) ', i)
+        .then((data) => {
+            console.log(data)
+            res.send(data);
+        })
+        pgp.end();
+})
+
+
+//add student details 
+router.post('/student',(req,res,next) => {
+    var db = pgp(cs);
+    ssid = req.body.s_stdschid;
+    ssbid =req.body.s_stdschbrnid
+    sfn = req.body.s_stdfname
+    sln = req.body.s_stdlname
+    sam = req.body.s_stdadmissionnum
+    sdob =req.body.s_stddob
+    sg=req.body.s_stdgender
+    sfan = req.body.s_stdfathername
+    smon =req.body.s_stdmothername 
+    sfo=req.body.s_stdfatheroccupation
+    sc =req.body.s_stdcaste
+    ssc=req.body.s_stdsubcaste
+    sr=req.body.s_stdreligion
+    sn =req.body.s_stdnationality
+    sem=req.body.s_stdemail
+    sc=req.body.s_stdcountry
+    ss =req.body.s_stdstate
+    sci =req.body.s_stdcity
+    sa =req.body.s_stdaddress
+    sadhr =req.body.s_stdaadhar
+    simg =req.body.s_stdimage
+    scn1 =req.body.s_stdcontactnum1
+    scn2 =req.body.s_stdcontactnum2
+    ss =req.body.s_stdstatus
+    
+  
+
+
+
+     db.any('select  fn_Add_Studentdetails($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24)',
+      [
+        ssid, ssbid,sfn ,sln,sam ,sdob,sg,sfan ,smon ,sfo,sc ,ssc,sr,sn,sem,sc,ss,sci,sa ,sadhr ,simg ,scn1 ,scn2 ,ss ]).then(() => {
+        res.send('record Inserted Succexxx...');
+
+    })
+    pgp.end();
+})
+
+
+//updating student details by student id
+router.put('/student/:s_stdid',(req,res,next)=>{
+    var db = pgp(cs);
+    sid =req.params.s_stdid;
+    ssid = req.body.s_stdschid;
+    ssbid =req.body.s_stdschbrnid
+    sfn = req.body.s_stdfname
+    sln = req.body.s_stdlname
+    sam = req.body.s_stdadmissionnum
+    sdob =req.body.s_stddob
+    sg=req.body.s_stdgender
+    sfan = req.body.s_stdfathername
+    smon =req.body.s_stdmothername 
+    sfo=req.body.s_stdfatheroccupation
+    sc =req.body.s_stdcaste
+    ssc=req.body.s_stdsubcaste
+    sr=req.body.s_stdreligion
+    sn =req.body.s_stdnationality
+    sem=req.body.s_stdemail
+    sc=req.body.s_stdcountry
+    ss =req.body.s_stdstate
+    sci =req.body.s_stdcity
+    sa =req.body.s_stdaddress
+    sadhr =req.body.s_stdaadhar
+    simg =req.body.s_stdimage
+    scn1 =req.body.s_stdcontactnum1
+    scn2 =req.body.s_stdcontactnum2
+    ss =req.body.s_stdstatus
+    db.any('select  fn_Upd_Studentdetails_by_Stid($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25)',
+    [sid,ssid, ssbid,sfn ,sln,sam ,sdob,sg,sfan ,smon ,sfo,sc ,ssc,sr,sn,sem,sc,ss,sci,sa ,sadhr ,simg ,scn1 ,scn2 ,ss ])
+     .then(function(){
+        res.status(200).send({message:"Updated Succes...."})
+    })
+    pgp.end();
+})
+//***********************subjectmaster********************************* */
+
+// getting subject details 
+router.get('/subject', (req, res, next) => {
+    var db = pgp(cs);
+    db.any('select * from fn_GetAll_Subjdetails()').then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+
+// getting subject details by subject id
+router.get('/subject/:subjid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.subjid;
+    db.any('select * from fn_Get_SubjDetails_by_Subid($1)', i)
+        .then(function (data) {
+            res.send(data);
+        })
+        pgp.end();
+})
+
+//getting subject details by branch id
+router.get('/subject/branch/:brnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnid;
+    db.any('select * from fn_Get_SubjDetails_by_Brnid($1)', i)
+        .then(function (data) {
+            res.send(data);
+        })
+        pgp.end();
+})
+
+//adding  subject details 
+router.post('/subject', (req, res, next) => {
+    var db = pgp(cs);
+    console.log(req.body);
+    var schid=req.body.s_schid;
+    var brnid=req.body.s_brnid;
+    var sn = req.body.s_subjname;
+    var sm = req.body.s_subjmedium;
+    db.any('select fn_Add_SubjDetails  ($1,$2,$3,$4)',[schid,brnid,sn,sm])
+ .then(function () {
+            res.status(200).send({"message" : "insertEd Succes..."});
+        })
+        pgp.end();
+})
+
+//updating subject details by subject id
+router.put('/student/:s_subjid',(req,res,next)=>{
+    var db = pgp(cs);
+    var si = req.params.s_subjid
+    var sn = req.body.s_subjname;
+    var sm = req.body.s_subjmedium;
+
+    db.any('select fn_Upd_Subjdetails_bySubid($1,$2,$3)',[si,sn,sm])
+    .then(function(){
+        res.status(200).send({message:"Updated Succes...."})
+    })
+    pgp.end();
+})
+
+//*************************user transport**************************** */
+//getting all details of user transport 
+router.get('/usertransportmaster', (req, res, next) => {
+    var db=pgp(cs)
+    db.any('select * from fn_GetAll_usertransportdetails()').then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// getting usertransport details by usertransportuserid(utuserid)
+router.get('/usertransportmaster/:utuserid', (req, res, next) => {
+    var db=pgp(cs)
+    var i = req.params.utuserid
+
+    db.any('select * from fn_Get_usertransportdetails_byutuserid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+//getting usertransport details by using stop id
+router.get('/usertransportmaster/stop/:utstpid', (req, res, next) => {
+    var db=pgp(cs)
+    var i = req.params.utstpid;
+
+    db.any('select * from fn_Get_usertransportdetails_bystpid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+
+//adding user transport details 
+router.post('/usertransportmaster', (req, res, next) => {
+
+    var db=pgp(cs)
+    uid = req.body.a_utuserid;
+    stid = req.body.a_utstpid;
+   
+
+
+    db.any('select fn_Add_usertransportdetails($1,$2)', [ uid, stid]).then(() => {
+        res.send({ "message": "record Inserted Succexxx..." })
+    })
+    pgp.end();
+})
+
+
+//updating user transport details by user transport userid
+router.put('/usertransportmaster/:a_utuserid', (req, res, next) => {
+    var db=pgp(cs)
+
+    var i = req.params.a_utuserid;
+    stid = req.body.a_utstpid;
+    
+    db.any(
+        'select fn_Upd_usertransportdetails($1,$2)', [i,  stid]).then(() => {
+            res.send({ "message": "Update success.." })
+        })
+        pgp.end();
+})
+
+
+//*************************user transport pay master***************************** */
+//getting  all usertransport pay details 
+router.get('/usertransportpaymaster', (req, res, next) => {
+    var db=pgp(cs)
+    db.any('select * from fn_GetAll_usertransportpaydetails()').then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+//getting usertransport  pay details by user transort pay user id
+router.get('/usertransportpaymaster/:id', (req, res, next) => {
+    var db=pgp(cs)
+    var i = req.params.id
+
+    db.any('select * from fn_Get_usertransportpaydetails_byutpuserid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+
+//adding usertransport pay details
+router.post('/usertransportpaymaster', (req, res, next) => {
+
+    var db=pgp(cs)
+    uid = req.body.a_utpuserid;
+    upa = req.body.a_utpaidamount;
+    upd = req.body.a_utpaiddate;
+    urb = req.body.a_utbal;
+    ups = req.body.a_utstatus;
+
+
+    db.any('select fn_Add_usertransportpaydetails($1,$2,$3,$4,$5)', [uid,upa, upd,urb,ups]).then(() => {
+        res.send({ "message": "record Inserted Succexxx..." })
+    })
+    pgp.end();
+})
+
+
+
+
+//updating user transport pay details by usertransport pay user id
+router.put('/usertransportpaymaster/:utpuserid', (req, res, next) => {
+    var db=pgp(cs)
+
+    var i = req.params.utpuserid;
+
+    upa = req.body.a_utpaidamount;
+    upd = req.body.a_utpaiddate;
+    urb = req.body.a_utbal;
+    ups = req.body.a_utstatus;
+    
+    db.any('select fn_Upd_usertransportpaydetails($1,$2,$3,$4,$5)', [i,upa, upd,urb,ups]).then(() => {
+            res.send({ "message": "Update success.." })
+        })
+        pgp.end();
+})
+
+/***************************team1 end**************************** */
 module.exports = router;

@@ -14,6 +14,7 @@ router.use(bodyparser.json());
 
 var pgp = require('pg-promise')(options)
 var cs = 'postgres://postgres:root@192.168.0.238:5432/infobyt'
+/*******************************Team @ 2 start************************************ */
 //post leaves
 router.post('/leaves',(req,res,next)=>{
     var db=pgp(cs)
@@ -28,7 +29,7 @@ db.any('select * from fn_add_leaves($1,$2,$3,$4)',[usid,from,to,stat]).then(()=>
 })
 //put using userid
 
-router.put('/leaves/:usrid',(req,res,next)=>{
+router.put('/leaves/user/:usrid',(req,res,next)=>{
     var db=pgp(cs)
     usid=req.params.usrid;
     stat=req.body.sta;
@@ -37,12 +38,41 @@ db.any('select * from fn_updbyuserid_leaves($1,$2)',[usid,stat]).then(()=>{
     })
     pgp.end();
 })
+
+//get timetable by schl id
+router.get('/timetable/school/:schid',(req,res,next)=>{
+    var db=pgp(cs)
+    sid=req.params.schid;
+    db.any('select * from fn_getbyschid_timetables($1)',sid).then((data)=>{
+        res.send(data)
+    })
+    pgp.end();
+})
+//get time table by brn id
+router.get('/timetable/branch/:bid',(req,res,next)=>{
+    var db=pgp(cs)
+    id=req.params.bid;
+    db.any('select * from fn_getbybrnidtimetables($1)',id).then((data)=>{
+        res.send(data)
+    })
+    pgp.end();
+})
+//get time table by class id
+router.get('/timetable/class/:classid',(req,res,next)=>{
+    var db=pgp(cs)
+    cid=req.params.classid;
+    db.any('select * from fn_get_timetablebyclass($1)',cid).then((data)=>{
+        res.send(data)
+    })
+    pgp.end();
+})
+
 //to getby id achievements details
-router.get('/ach/:achid', (req, res, next) => {
+router.get('/ach/student/:stdid', (req, res, next) => {
     var db = pgp(cs);
 
-    var i = (req.params.achid);
-    db.any('select * from fn_getbyid_achievements($1)', i).then((data) => {
+    var i = (req.params.stdid);
+    db.any('select * from fn_getachievementsbystdid($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
@@ -53,7 +83,7 @@ router.get('/ach/branch/:achbrnid', (req, res, next) => {
     var db = pgp(cs);
     var i = (req.params.achbrnid);
     console.log(i)
-    db.any('select * from get_stdid_achstdid($1)', i).then((data) => {
+    db.any('select * from fn_getachievementsbybrnid($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
@@ -73,6 +103,8 @@ router.post('/', (req, res, next) => {
         })
     pgp.end();
 })
+/*******************************Team @ 2 end************************************ */
+
 /*********************************************************************************************** */
 /***************************************TEAM3-START********************************************** */
 //GALLERY

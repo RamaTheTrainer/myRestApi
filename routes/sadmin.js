@@ -14,6 +14,8 @@ router.use(bodyparser.json());
 
 var pgp = require('pg-promise')(options)
 var cs = 'postgres://postgres:root@192.168.0.238:5432/infobyt'
+/***************************Team @ 2 start**************************** */
+
 //Getting particular school using school id
 router.get('/school/:schid', (req, res, next) => {
     var i =req.params.schid;
@@ -46,7 +48,7 @@ router.put('/school/:schid', (req, res, next) => {
             res.send({ "message": "Update success.." })
         })
 })
-
+/***************************Team @ 2 end**************************** */
 
 
 module.exports = router ;

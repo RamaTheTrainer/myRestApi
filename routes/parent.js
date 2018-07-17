@@ -63,6 +63,32 @@ router.get('/schfeedback/school/:shlid', (req, res, next) => {
     })
     pgp.end()
 })
-/* team4 end*/
-
+/* ***************************************team4 end***********************************************/
+/****************************************TEAM3-START************************************************ */
+//Class Subject master
+//--------------------------------------------------------------------------------------------------
+//get subjinfo by classid
+router.get('/classsubject/class/:clsid', (req, res, next) => {
+    
+    var db = pgp(cs);
+    var i = req.params.clsid
+    console.log(i);
+    db.any('select * from fn_GetSubj_byclassid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+//get syllabus of a subject by subjid
+router.get('/classsubject/subject/:subjidd', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.subjidd
+    console.log(i);
+    db.any('select * from fn_GetSubjsyllabus_bysubjid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+/**********************************TEAM3-END*************************************************** */
 module.exports = router ;

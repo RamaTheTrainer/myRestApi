@@ -59,10 +59,6 @@ router.get('/ach/branch/:achbrnid', (req, res, next) => {
     pgp.end();
 })
 
-
-
-
-
 // to insert new achievements details
 router.post('/', (req, res, next) => {
     var db = pgp(cs);
@@ -77,7 +73,104 @@ router.post('/', (req, res, next) => {
         })
     pgp.end();
 })
+/*********************************************************************************************** */
+/***************************************TEAM3-START********************************************** */
+//GALLERY
+//------------------------------------------------------------------------------------------------
+//get galleryinfo by galleryid
+router.get('/gallery/:gid', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.gid;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from  fn_Get_Gallery_bygid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//get galleryinfo by schoolid
+router.get('/gallery/school/:schid', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.schid;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from  fn_Get_Gallery_byschld($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//get galleryinfo by branchid
+router.get('/gallery/branch/:brnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.brnid;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from  fn_Get_Gallery_bybrnid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//adding gallery details
+router.post('/gallery', (req, res, next) => {
+    var db = pgp(cs);
+    var si = req.body.a_schld;
+    var brid = req.body.a_brnid;
+    var gi = req.body.a_gimage;
+    var gid = req.body.a_gimagdesc;
+    var gd = req.body.a_gimgdate;
 
+   
+    db.any('select * from fn_Add_GalleryInfo($1,$2,$3,$4,$5)',[si,brid,gi,gid,gd]).then(()=> {
+        console.log('Record Inserted ...')
+        res.status(200).send({ message: "Inserted Success.." });
+    })
+    pgp.end();
+}) 
+//update gallery by galleryid
+router.put('/gallery/:gid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.gid;
+    var gimage = req.body.a_gimage;
+    var gimgdesc = req.body.a_gimagdesc;
+    var gimgdte = req.body.a_gimgdate;
+  
 
+    db.any('select * from fn_Upd_Galleryinfo_bygid($1,$2,$3,$4)', [i,gimage,gimgdesc,gimgdte]).then(()=>{
+        console.log('Record Updated Success ...')
+        res.status(200).send({ message: "Updated Succes.." })
+    })
+    pgp.end();
+})
+//update galleryinfo by schoolid
+ router.put('/gallery/school/:schid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.schid;
+    var gimage = req.body.a_gimage;
+    var gimgdesc = req.body.a_gimagdesc;
+    var gimgdte = req.body.a_gimgdate;
+  
+
+    db.any('select * from fn_Upd_Galleryinfo_byschld($1,$2,$3,$4)', [i,gimage,gimgdesc,gimgdte]).then(()=>{
+        console.log('Record Updated Success ...')
+        res.status(200).send({ message: "Updated Succes.." })
+    })
+    pgp.end();
+})
+//update galleryinfo by branchid
+router.put('/gallery/branch/:brnchid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnchid;
+    var gimage = req.body.a_gimage;
+    var gimgdesc = req.body.a_gimagdesc;
+    var gimgdte = req.body.a_gimgdate;
+  
+
+    db.any('select * from fn_Upd_Galleryinfo_bybrnid($1,$2,$3,$4)', [i,gimage,gimgdesc,gimgdte]).then(()=>{
+        console.log('Record Updated Success ...')
+        res.status(200).send({ message: "Updated Succes.." })
+    })
+    pgp.end();
+})
+//*******************************************TEAM3-END********************************************* */
 
 module.exports = router ;

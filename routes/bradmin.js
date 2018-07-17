@@ -751,4 +751,209 @@ router.get('/holiday/school/:hldyshlid', (req, res, next) => {
 })
 
 /* *****************************team4 end***************************************************/
+/********************************TEAM3-START********************************************* */
+/************************************GALLERY********************************************* */
+//get galleryinfo by galleryid
+router.get('/gallery/:gid', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.gid;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from  fn_Get_Gallery_bygid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//get galleryinfo by schoolid
+router.get('/gallery/school/:schid', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.schid;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from  fn_Get_Gallery_byschld($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//get galleryinfo by branchid
+router.get('/gallery/branch/:brnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.brnid;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from  fn_Get_Gallery_bybrnid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//adding gallery details
+router.post('/gallery', (req, res, next) => {
+    var db = pgp(cs);
+    var si = req.body.a_schld;
+    var brid = req.body.a_brnid;
+    var gi = req.body.a_gimage;
+    var gid = req.body.a_gimagdesc;
+    var gd = req.body.a_gimgdate;
+
+   
+    db.any('select * from fn_Add_GalleryInfo($1,$2,$3,$4,$5)',[si,brid,gi,gid,gd]).then(()=> {
+        console.log('Record Inserted ...')
+        res.status(200).send({ message: "Inserted Success.." });
+    })
+    pgp.end();
+}) 
+//update galleryinfo by schoolid
+ router.put('/gallery/school/:schid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.schid;
+    var gimage = req.body.a_gimage;
+    var gimgdesc = req.body.a_gimagdesc;
+    var gimgdte = req.body.a_gimgdate;
+  
+
+    db.any('select * from fn_Upd_Galleryinfo_byschld($1,$2,$3,$4)', [i,gimage,gimgdesc,gimgdte]).then(()=>{
+        console.log('Record Updated Success ...')
+        res.status(200).send({ message: "Updated Succes.." })
+    })
+    pgp.end();
+})
+//update galleryinfo by branchid
+router.put('/gallery/branch/:brnchid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnchid;
+    var gimage = req.body.a_gimage;
+    var gimgdesc = req.body.a_gimagdesc;
+    var gimgdte = req.body.a_gimgdate;
+  
+
+    db.any('select * from fn_Upd_Galleryinfo_bybrnid($1,$2,$3,$4)', [i,gimage,gimgdesc,gimgdte]).then(()=>{
+        console.log('Record Updated Success ...')
+        res.status(200).send({ message: "Updated Succes.." })
+    })
+    pgp.end();
+})
+//--------------------------------------------------------------------------------------------------
+//Class Subject master
+//--------------------------------------------------------------------------------------------------
+//get subjinfo by classid
+router.get('/classsubject/class/:clsid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.clsid
+    console.log(i);
+    db.any('select * from fn_GetSubj_byclassid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+//get syllabus of a subject by subjid
+router.get('/classsubject/subject/:subjidd', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.subjidd
+    console.log(i);
+    db.any('select * from fn_GetSubjsyllabus_bysubjid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+//add subject and syllabus details of class subjectmaster
+router.post('/classsubject/class', (req, res, next) => {
+    var db = pgp(cs);
+    sid = req.body.schidd;
+    cid = req.body.clsidd;
+    siid = req.body.subjidd;
+    sbs = req.body.syllabuss;
+  /*   console.log(clsid);
+    console.log(schid);
+    console.log(subjid);
+    console.log(syllabus);
+ */   
+    db.any('select fn_Add_ClassSubj_info($1,$2,$3,$4)', [sid, cid, siid, sbs]).then(() => {
+        res.send({ "message": "record Inserted Succexxx..." })
+    })
+    pgp.end();
+})
+//update syllabus by subjid
+router.put('/classsubject/subject/:subjidd', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.subjidd;
+    var upd = req.body.syllabuss;
+    console.log(i);
+    console.log(upd);
+    db.any('select fn_Upd_Syllabus_bysubjid($1,$2)',[i, upd]).then(() => {
+        res.send({ "message": "Update success.." })
+    })
+    pgp.end();
+})
+//--------------------------------------------------------------------------------------------
+//Faculty
+//--------------------------------------------------------------------------------------------
+//fn_GetAllFacinfo_byBrnid
+router.get('/faculty/branch/:brnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnid;
+    db.any('select * from fn_GetAllFacinfo_byBrnid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//add faculty details
+router.post('/faculty', (req, res, next) => {
+    
+    var db = pgp(cs);
+    var schid = req.body.schidd;
+    var brnid= req.body.brnidd;
+    var facfname = req.body.facfnamee;
+    var faclname= req.body.faclnamee;
+    var gender = req.body.genderr;
+    var dob = req.body.dobb;
+    var doj = req.body.dojj;
+    var experience = req.body.experiencee;
+    var image = req.body.imagee;
+    var contactno1 = req.body.contactno1e;
+    var contactno2 = req.body.contactno2e;
+    var emailid = req.body.emailidd;
+    var address = req.body.addresss;
+    var city = req.body.cityy;
+    var fstate = req.body.fstatee;
+    var country= req.body.countryy;
+    var status = req.body.statuss;
+
+    var contactno1 = req.body.contactno1e;
+    var emailid = req.body.emailidd;
+    db.any('select fn_Gen_Add_Faculty($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)', [schid, brnid,facfname, faclname, gender, dob, doj, experience, image, contactno1, contactno2, emailid, address,city,fstate,country,status])
+        .then(function () {
+            res.status(200).send({ message: "Record Inserted Success.." });
+        })
+        pgp.end();
+})
+//update totalfaculty info
+router.put('/faculty/:facid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.facid;
+    var facfnme= req.body.facfnamee;
+    var faclnme = req.body.faclnamee;
+    var gender=req.body.genderr;
+    var dob=req.body.dobb;
+    var doj=req.body.dojj;
+    var experience=req.body.experiencee;
+    var image=req.body.imagee;
+     var contct1 = req.body.contactno1e;
+    var contct2=req.body.contactno2e;
+    var emailid=req.body.emailidd;
+    var address=req.body.addresss;
+    var city=req.body.cityy;
+    var fstate=req.body.fstatee;
+    var country=req.body.countryy;
+    var status=req.body.statuss;
+
+    db.any('select * from fn_Upd_Facinfo_byfacid($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)', [i, facfnme, faclnme,gender,dob,doj,experience,image,contct1,contct2,
+        emailid,address,city,fstate,country,status]).then(function () {
+        console.log('Record Updated Success ...')
+        res.status(200).send({ message: "Updated Succes.." })
+    })
+    pgp.end();
+})
+/********************************************TEAM3-end************************************** */
 module.exports = router;

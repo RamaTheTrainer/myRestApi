@@ -912,6 +912,248 @@ router.put('/faculty/:facid', (req, res, next) => {
     })
     pgp.end();
 })
+//-------------------------------------------------------------------------------------------
+//SchoolClassSectionMaster
+//-------------------------------------------------------------------------------------------
+//get schoolclasssecmstr info by schid
+router.get('/schclssec/school/:stdid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.stdid;
+    db.any('select * from fn_Get_Schoolclasssecmstrinfo_by_Stdid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//get schoolclasssecmstr info by brnid
+router.get('/schclssec/branch/:brnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnid;
+    db.any('select * from fn_Get_Schoolclasssecmstrinfo_by_brnid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//get schoolclasssecmstr info by clsid
+router.get('/schclssec/class/:clsid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.clsid;
+    db.any('select * from fn_Get_Schoolclasssecmstrinfo_by_clsid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//add schoolclasssecmstrinfo
+router.post('/schclssec', (req, res, next) => {
+    var db = pgp(cs);
+    var sectschid = req.body.sctschidd;
+    var sectbrnid = req.body.sctbrnidd;
+    var sectclsid = req.body.sctclsidd;
+    var sectnme = req.body.sctnamee;
+    var sectid = req.body.sctidd;
+    db.any('select fn_Add_ClassSectioninfo($1,$2,$3,$4,$5)', [sectschid, sectbrnid, sectclsid, sectnme, sectid])
+        .then(function () {
+            res.status(200).send({ message: "Record Inserted Success.." });
+        })
+        pgp.end();
+})
+//update schoolclasssecmstrname by secid
+router.put('/schclssec/section/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.id;
+    var sectnme = req.body.sctnamee;
+    console.log(i);
+    console.log(sectnme);
+    db.any('select fn_Upd_ClassSectionname_bysectid($1,$2)',[i,sectnme]).then(function () {
+        console.log('Record Updated Success ...')
+        res.status(200).send({ message: "Updated Succes.." })
+    })
+    pgp.end();
+})
+//-------------------------------------------------------------------------------
+//classtechermaster
+//----------------------------------------------------------------------------
+//get classteacherinfo by classid
+router.get('/clsteach/class/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.id
+    db.any('select * from fn_Get_ClassTeacher_byclsid($1)', i)
+        .then(function (data) {
+            res.send(data);
+        })
+        pgp.end();
+})
+//get classteacherinfo by branchid
+router.get('/clsteach/branch/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.id
+    db.any('select * from fn_Get_ClassTeacherinfo_bybrnid($1)', i)
+        .then(function (data) {
+            res.send(data);
+        })
+        pgp.end();
+})
+//get classteacherinfo by facid
+router.get('/clsteach/faculty/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.id
+    db.any('select * from fn_Get_ClassTeacherinfo_byfacid($1)', i)
+        .then(function (data) {
+            res.send(data);
+        })
+        pgp.end();
+})
+//add classteacher details
+router.post('/clsteach', (req, res, next) => {
+    var db = pgp(cs);
+    console.log(req.body);
+   
+    var SId = req.body.schidd;
+    var BId = req.body.brnidd;
+    var FId = req.body.facidd;
+    var BtId = req.body.btcidd;
+    db.any('select fn_Add_ClassTeacher($1,$2,$3,$4)',[SId,BId,FId,BtId])
+        .then(function () {
+            res.status(200).send({"message" : "insertEd Succes..."});
+        })
+        pgp.end();
+})
+//update classteacher status with facid
+router.put('/clsteach/faculty/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.id;
+    var sts = req.body.Status;
+    db.any('select * from fn_Upd_ClassteacherStatus_byfacid($1,$2)', [sts,i]).then(function () {
+        console.log('Record Updated Success ...')
+        res.status(200).send({ message: "Updated Succes.." })
+    })
+    pgp.end();
+})
+//-------------------------------------------------------------------------
+//Batchmaster
+//--------------------------------------------------------------------------------
+//get batch details by schid
+router.get('/batch/school/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.id;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from  fn_Getbatchbybtcschid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//get batch details by brnid
+router.get('/batch/branch/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.id;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from  fn_Getbatchbybtcbrnid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//get batch details by sectid
+router.get('/batch/section/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.id;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from  fn_Getbatchbybtcsctid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//get batch details by sectid
+router.get('/batch/btc/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.id;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from  fn_Getbatchbyid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//adding batch details 
+router.post('/batch', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.body.btcidd;
+    var schidd = req.body.btcschidd;
+    var brnidd = req.body.btcbrnidd;
+    var sctidd = req.body.btcsctidd;
+    var startdatee=req.body.btcstartdatee;
+    var enddatee = req.body.btcenddatee;
+    var classidd = req.body.btcclassidd;
+    var secnamee = req.body.btcsecnamee;
+   var statuss = req.body.btcstatuss;
+
+    db.any('select * from fn_gen_AddBatch($1,$2,$3,$4,$5,$6,$7,$8)',[schidd,brnidd,
+        sctidd,startdatee,enddatee,classidd,secnamee,statuss]).then(()=> {
+        console.log('Record Inserted ...')
+        res.status(200).send({ message: "Inserted Success.." });
+    })
+    pgp.end();
+})
+//update batch details using brnid
+router.put('/batch/btc/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.id;
+    var bed = req.body.btcenddatee;
+    var sts = req.body.btcstatuss;
+    console.log('end date  :  '+bed)
+    console.log('status  :  '+sts)
+    db.any('select * from fn_Upd_batchbyid($1,$2,$3)', [i,bed,sts]).then(function () {
+        console.log('Record Updated Success ...')
+        res.status(200).send({ message: "Updated Succes.." })
+    })
+    pgp.end();
+})
+//--------------------------------------------------------------------
+//student batch master
+//-----------------------------------------------------------------
+// get studentbatchid by btcid
+router.get('/studbatch/batch/:btcid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.btcid;
+    db.any('select * from fn_Get_StudentBatchID_by_btcid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+// get studentbatchid by stdid
+router.get('/studbatch/student/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.id;
+    db.any('select * from fn_Get_StudentBatchID_by_Stdid($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+//-----------------------------------------------------------------
+//facultysubjectmaster
+//------------------------------------------------------------------
+//get facultysubjectsinfo by facid
+router.get('/facsubj/faculty/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.id
+    db.any('select * from fn_FacultySubjectmaster_get_subjid_byfacid($1)', i)
+        .then(function (data) {
+            res.send(data);
+        })
+        pgp.end();
+})
+//get facultysubjectsinfo by subjid
+router.get('/facsubj/subj/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.id
+    db.any('select * from fn_FacultySubjectmaster_get_facid_bysubjid($1)', i)
+        .then(function (data) {
+            res.send(data);
+        })
+        pgp.end();
+})
+
 /********************************************TEAM3-end************************************** */
 
 

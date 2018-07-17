@@ -15,234 +15,6 @@ router.use(bodyparser.json());
 var pgp = require('pg-promise')(options)
 var cs = 'postgres://postgres:root@192.168.0.238:5432/infobyt'
 
-/**********************    team 4 16-07-2018 *************** */
-
-// adding schoolfeedback details //
-
-router.post('/schfeedback', (req, res, next) => {
-    var db = pgp(cs);
-
-
-    var si=req.body.shlid;
-    var bi=req.body.brnid;
-    var ui=req.body.user_id;
-    var ff=req.body.feedback;
-    var rr=req.body.schrating;
-
-   db.any('select * from fn_add_schoolfeedback($1, $2, $3,$4,$5)', [si,bi,ui,ff,rr])
-       .then(() => {
-           res.send({ "message": "insert is  sucessssssssssssss::" });
-       })
-       pgp.end()
-})
-
-
-// retrieving schoolfeedback details by using brnid //
-
-router.get('/schfeedback/branch/:brnid', (req, res, next) => {
-    var db = pgp(cs);
-
-    var i = req.params.brnid;
-    db.any('select * from fn_getbybranchid_schoolfeedback($1)', [i]).then((data) => {
-        res.send(data);
-    })
-    pgp.end()
-}) 
-
-
-
-
-
-//get fees by schoolid
-
-
-router.get('/feeinfo/school/:fschid', (req, res, next) => {
-    var db = pgp(cs);
-    var i = req.params.fschid;
-    db.any('select  * from  fn_getfeesbyschid($1)',i).then((data) => {
-        res.send(data)
-    })
-    pgp.end()
-})
-//get fees by branchid
-router.get('/feeinfo/branch/:fbrnid', (req, res, next) => {
-    var db = pgp(cs);
-    var b =req.params.fbrnid
-    db.any('select  * from    fn_getfeesbybrnid($1)',b).then((data) => {
-        res.send(data)
-    })
-    pgp.end()
-})
-//get fees by classid
-router.get('/feeinfo/class/:fclsid', (req, res, next) => {
-    var db = pgp(cs);
-    var a = req.params.fclsid;
-    db.any('select  * from  fn_getfeesbyclsid($1)',a).then((data) => {
-        res.send(data)
-    })
-    pgp.end()
-})
-// insert fees info
-
-router.post('/feeinfo', (req, res, next) => {
-    var db = pgp(cs);
-
-    var si = req.body.fschid;
-    var bi = req.body.fbrnid;
-    var cc = req.body.fclsid;
-    var aa = req.body.famnt;
-
-    db.any('select * from fn_addfeesinfo($1,$2,$3,$4)', [si, bi, cc, aa])
-        .then(() => {
-            res.send({ "message": "insert is  sucessssssssssssss::" });
-        })
-        pgp.end()
-})
-// update fees structure by classid
-router.put('/feeinfo/class/:fclsid', (req, res, next) => {
-    var db = pgp(cs);
-    
-    
-    
-    var cc = req.body.fschid;
-    var fi = req.body.fbrnid;
-    var i = req.params.fclsid;
-    var aa = req.body.famnt;
-   
-    db.any('select * from  fn_updatefees($1,$2,$3,$4)', [  cc,fi,i, aa]).then(() => {
-        res.send({ "message": "update is sucesss" });
-    })
-    pgp.end()
-})
-
-
-
-//getting salary details by schoolid
-router.get('/salary/school/:schid', (req, res, next) => {
-    var db = pgp(cs);
-    var i = req.params.schid;
-    db.any('select  * from fn_Get_salary_infobysch($1)', i).then((data) => {
-        res.send(data)
-    })
-    pgp.end()
-})
-
-//getting salary details by branchid
-router.get('salary/branch/:brnid', (req, res, next) => {
-    var db = pgp(cs);
-    var i = req.params.brnid;
-    db.any('select * from  fn_Get_salary_infobybrn($1)', i).then((data) => {
-        res.send(data);
-    })
-    pgp.end()
-})
-
-// inserting salary details
-router.post('/salary', (req, res, next) => {
-    var db = pgp(cs);
-
-    var fi = req.body.salfid;
-    var sali = req.body.salsal;
-    var ss = req.body.salalw;
-    var sd = req.body.saldedc;
-
-    db.any('select * from fn_addsalary_info($1,$2,$3,$4)', [fi, sali, ss, sd])
-        .then(() => {
-            res.send({ "message": "insert is  sucessssssssssssss::" });
-        })
-    pgp.end()
-})
-
-//updating salary details by facultyid
-router.put('/salary/faculty/:salfid', (req, res, next) => {
-    var db = pgp(cs);
-
-    var i = req.params.salfid;
-
-    var fi = req.body.salsal;
-    var cc = req.body.salalw;
-    var aa = req.body.saldedc;
-
-    db.any("select * from  fn_updsalaryinfo_byfacid($1,$2,$3,$4)", [i, fi, cc, aa]).then(() => {
-        res.send({ "message": "update is sucesss" });
-    })
-    pgp.end()
-})
-
-
-//   for adding feepayment details //                           
-router.post('/feepayment', (req, res, next) => {
-    var db = pgp(cs);
-    var ti=req.body.stdid;
-    var pp=req.body.pa;
-    var pi=req.body.pd;
-    var rr=req.body.re;
-db.any('select * from fn_add_feepayinfo($1, $2, $3,$4)', [ti,pp,pi,rr])
-       .then(() => {
-           res.send({ "message": "insert is  sucessssssssssssss::" });
-       })
-       pgp.end()
-})
-// updating feepayment details by using stdid //
-router.put('/feepayment/:stdid', (req, res, next) => {
-    var db = pgp(cs);
-    var i = req.params.stdid;
-    var pp=req.body.pa;
-    var pi=req.body.pd;
-    var rr=req.body.re;
-   
-   
-   
-    db.none("select * from fn_feepaymentmaster_update($1,$2,$3,$4)", [i,pp,pi,rr]).then(() => {
-        res.send({ "message": "update is sucesss" });
-    })
-    pgp.end()
-})
-
-// retrieving feepayment details by using stdid //
-router.get('/feepayment/student/:stdid', (req, res, next) => {
-    var db = pgp(cs);
-    var i = req.params.stdid;
-    db.any('select * from fn_feepaymentmaster_selectbyid($1)', i).then((data) => {
-        res.send(data);
-    })
-    pgp.end()
-})
-
-// retrieving feepayment details by using brnid //
-router.get('/feepayment/branch/:brnhid', (req, res, next) => {
-    var db = pgp(cs);
-    var i = req.params.brnhid;
-    db.any('select * from fn_Get_feepaymentbybrn($1)', i).then((data) => {
-        res.send(data);
-    })
-    pgp.end()
-})
-
-// retrieving feepayment details by using schlid //
-router.get('/feepayment/school/:schlid', (req, res, next) => {
-    var db = pgp(cs);
-    var i = req.params.schlid;
-    db.any('select * from fn_Get_feepaymentbysch($1)', i).then((data) => {
-        res.send(data);
-    })
-    pgp.end()
-})
-
-// adding holiday details //
-router.post('/holiday', (req, res, next) => {
-    var db = pgp(cs);
-    var si=req.body.hldyshlid;
-    var bi=req.body.hldybrnid;
-    var hd=req.body.hldydt;                                                                                                                                                                                                                                                                                                                                      
-    var ho=req.body.hldyocc;
-
-   db.none('select * from fn_add_holiday($1, $2, $3,$4)', [si,bi,hd,ho])
-       .then(() => {
-           res.send({ "message": "insert is  sucessssssssssssss::" });
-       })
-       pgp.end()
-})
 
 //getting particular userid 
 router.get('/users/:usrid', (req, res, next) => {
@@ -673,41 +445,7 @@ router.put('bus/busbranch/:busbrnid', (req, res, next) => {
 
 
 
-// updating holiday details by using hldyshlid //
 
-router.put('/holiday/school/:hldyshlidid', (req, res, next) => {
-    var db = pgp(cs);
-    var i = req.params.hldyshlidid;
-   var hb=req.body.hldybrnid;
-    var hh=req.body.hldydt;
-    var ho=req.body.hldyocc;
-    db.none("select * from fn_update_holiday($1,$2,$3,$4)", [i,hb,hh,ho]).then(() => {
-        res.send({ "message": "update is sucesss" });
-    })
-    pgp.end()
-})
-// retrieving holiday details by using hldybrnid //
-
-router.get('/holiday/branch/:hldybrnid', (req, res, next) => {
-    var db = pgp(cs);
-    var i = req.params.hldybrnid;
-    db.any('select * from fn_getbyhldybranchid_holiday($1)', [i]).then((data) => {
-        res.send(data);
-    })
-    pgp.end()
-}) 
-// retrieving holiday details by using hldyshlid //
-
-router.get('/holiday/school/:hldyshlid', (req, res, next) => {
-    var db = pgp(cs);
-    var i = req.params.hldyshlid;
-    db.any('select * from fn_getbyhldyschoolid_holiday($1)', [i]).then((data) => {
-        res.send(data);
-    })
-    pgp.end()
-})
-
-/* *****************************team4 end***************************************************/
 /********************************TEAM3-START********************************************* */
 /************************************GALLERY*********************************************** */
 //get galleryinfo by galleryid
@@ -1675,4 +1413,468 @@ router.put('/usertransportpaymaster/:utpuserid', (req, res, next) => {
 })
 
 /***************************team1 end**************************** */
+
+/************************************************* team4 start*****************************************/
+
+// adding holiday details //
+router.post('/holiday', (req, res, next) => {
+    var db = pgp(cs);
+    var si=req.body.hldyshlid;
+    var bi=req.body.hldybrnid;
+    var hd=req.body.hldydt;                                                                                                                                                                                                                                                                                                                                      
+    var ho=req.body.hldyocc;
+
+   db.none('select * from fn_add_holiday($1, $2, $3,$4)', [si,bi,hd,ho])
+       .then(() => {
+           res.send({ "message": "insert is  sucessssssssssssss::" });
+       })
+       pgp.end()
+})
+
+// retrieving holiday details by using branch id //
+
+router.get('/holiday/branch/:hldybrnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.hldybrnid;
+    db.any('select * from fn_getbyhldybranchid_holiday($1)', [i]).then((data) => {
+        res.send(data);
+    })
+    pgp.end()
+}) 
+// retrieving holiday details by using school id //
+
+router.get('/holiday/school/:hldyshlid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.hldyshlid;
+    db.any('select * from fn_getbyhldyschoolid_holiday($1)', [i]).then((data) => {
+        res.send(data);
+    })
+    pgp.end()
+})
+
+// updating holiday details by using school id //
+
+router.put('/holiday/school/:hldyshlidid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.hldyshlidid;
+   var hb=req.body.hldybrnid;
+    var hh=req.body.hldydt;
+    var ho=req.body.hldyocc;
+    db.none("select * from fn_update_holiday($1,$2,$3,$4)", [i,hb,hh,ho]).then(() => {
+        res.send({ "message": "update is sucesss" });
+    })
+    pgp.end()
+})
+
+// get examtimetable by school id
+router.get('/extimetable/school/:exmsid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.exmsid
+    db.any('select * from fn_get_examtimetablebyschool($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// get examtimetable by branch id
+router.get('/extimetable/branch/:exmbid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.exmbid
+    db.any('select * from fn_get_examtimetablebybranch($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// get examtimetable by class id
+router.get('/extimetable/class/:exmcid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.exmcid
+    db.any('select * from fn_get_examtimetablebyclass($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// add exam timetable
+router.post('/extimetable', (req, res, next) => {
+    var db = pgp(cs);
+    a = req.body.exsid;
+    b = req.body.exbid;
+    c = req.body.excid;
+    d = req.body.exfrmdt;
+    e = req.body.extodt;
+    f = req.body.url;
+    g = req.body.exst;
+  
+    db.none('select * from fn_add_examtimetable($1,$2,$3,$4,$5,$6,$7)', [a, b, c, d, e,f,g]).then(() => {
+        res.send({ message: 'record Inserted Successfully...' })
+    })
+    pgp.end();
+})
+
+
+// update exam timetable using branch id
+ router.put('/extimetable/branch/:exbid', (req, res, next) => {
+    var db = pgp(cs);
+    var pi = req.params.exbid;
+    a = req.body.exsid;
+
+    c = req.body.excid;
+    d = req.body.exfrmdt;
+    e = req.body.extodt;
+    f = req.body.url;
+    g = req.body.exst;
+    db.none("select * from fn_update_examtimetablebybranch($1, $2, $3, $4, $5, $6, $7)", [a,pi, c, d, e, f, g]).then(() => {
+            res.send('Updated Success');
+        })
+        pgp.end();
+}) 
+
+
+//get fees by schoolid
+
+router.get('/feeinfo/school/:fschid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.fschid;
+    db.any('select  * from  fn_getfeesbyschid($1)',i).then((data) => {
+        res.send(data)
+    })
+    pgp.end()
+})
+//get fees by branchid
+router.get('/feeinfo/branch/:fbrnid', (req, res, next) => {
+    var db = pgp(cs);
+    var b =req.params.fbrnid
+    db.any('select  * from    fn_getfeesbybrnid($1)',b).then((data) => {
+        res.send(data)
+    })
+    pgp.end()
+})
+//get fees by classid
+router.get('/feeinfo/class/:fclsid', (req, res, next) => {
+    var db = pgp(cs);
+    var a = req.params.fclsid;
+    db.any('select  * from  fn_getfeesbyclsid($1)',a).then((data) => {
+        res.send(data)
+    })
+    pgp.end()
+})
+// insert fees info
+
+router.post('/feeinfo', (req, res, next) => {
+    var db = pgp(cs);
+
+    var si = req.body.fschid;
+    var bi = req.body.fbrnid;
+    var cc = req.body.fclsid;
+    var aa = req.body.famnt;
+
+    db.any('select * from fn_addfeesinfo($1,$2,$3,$4)', [si, bi, cc, aa])
+        .then(() => {
+            res.send({ "message": "insert is  sucessssssssssssss::" });
+        })
+        pgp.end()
+})
+// update fees structure by classid
+router.put('/feeinfo/class/:fclsid', (req, res, next) => {
+    var db = pgp(cs);
+    var cc = req.body.fschid;
+    var fi = req.body.fbrnid;
+    var i = req.params.fclsid;
+    var aa = req.body.famnt;
+   
+    db.any('select * from  fn_updatefees($1,$2,$3,$4)', [  cc,fi,i, aa]).then(() => {
+        res.send({ "message": "update is sucesss" });
+    })
+    pgp.end()
+})
+
+//get facultyfeedback by facultyid.....
+router.get('/facfeedback/faculty/:id', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.id;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from fn_getbyfacultyfeedbackfclty($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+//get facultyfeedback by branchid......
+router.get('/facfeedback/branch/:brnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.brnid;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from fn_Get_facultyfeedbackbybranch($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// get student feedback by student id
+router.get('/studfeedback/student/:stuid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.stuid
+    db.any('select * from fn_get_studentfeedback($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// get student feedback by branch id
+router.get('/studfeedback/branch/:brnchid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnchid
+    db.any('select * from fn_get_studentfeedbackbybranch($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// retrieving schoolfeedback details by using school id //
+
+router.get('/schfeedback/school/:shlid', (req, res, next) => {
+    var db = pgp(cs);
+
+    var j = req.params.shlid;
+    db.any('select * from fn_getbyschoolid_schoolfeedback($1)', [j]).then((data) => {
+        res.send(data);
+    })
+    pgp.end()
+})
+
+//   for adding feepayment details //                           
+router.post('/feepayment', (req, res, next) => {
+    var db = pgp(cs);
+    var ti=req.body.stdid;
+    var pp=req.body.pa;
+    var pi=req.body.pd;
+    var rr=req.body.re;
+db.any('select * from fn_add_feepayinfo($1, $2, $3,$4)', [ti,pp,pi,rr])
+       .then(() => {
+           res.send({ "message": "insert is  sucessssssssssssss::" });
+       })
+       pgp.end()
+})
+
+// retrieving feepayment details by using student id //
+router.get('/feepayment/student/:stdid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.stdid;
+    db.any('select * from fn_Get_feepaymentbyst($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end()
+})
+
+// retrieving feepayment details by using branch id //
+router.get('/feepayment/branch/:brnhid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnhid;
+    db.any('select * from fn_Get_feepaymentbybrn($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end()
+})
+
+// retrieving feepayment details by using school id//
+router.get('/feepayment/school/:schlid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.schlid;
+    db.any('select * from fn_Get_feepaymentbysch($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end()
+})
+
+// updating feepayment details by using student id //
+router.put('/feepayment/:stdid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.stdid;
+    var pp=req.body.pa;
+    var pi=req.body.pd;
+    var rr=req.body.re;
+   
+   
+   
+    db.none("select * from fn_feepaymentmaster_update($1,$2,$3,$4)", [i,pp,pi,rr]).then(() => {
+        res.send({ "message": "update is sucesss" });
+    })
+    pgp.end()
+})
+
+//getting salary details by schoolid
+router.get('/salary/school/:schid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.schid;
+    db.any('select  * from fn_Get_salary_infobysch($1)', i).then((data) => {
+        res.send(data)
+    })
+    pgp.end()
+})
+
+//getting salary details by branchid
+router.get('/salary/branch/:brnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnid;
+    db.any('select * from  fn_Get_salary_infobybrn($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end()
+})
+
+//getting salary details by faculty id
+router.get('/salary/faculty/:fclty', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.fclty;
+    db.any('select * from  fn_Get_salary_infobyfacid($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end()
+})
+
+
+// inserting salary details
+router.post('/salary', (req, res, next) => {
+    var db = pgp(cs);
+
+    var fi = req.body.salfid;
+    var sali = req.body.salsal;
+    var ss = req.body.salalw;
+    var sd = req.body.saldedc;
+
+    db.any('select * from fn_addsalary_info($1,$2,$3,$4)', [fi, sali, ss, sd])
+        .then(() => {
+            res.send({ "message": "insert is  sucessssssssssssss::" });
+        })
+    pgp.end()
+})
+
+//updating salary details by facultyid
+router.put('/salary/faculty/:salfid', (req, res, next) => {
+    var db = pgp(cs);
+
+    var i = req.params.salfid;
+
+    var fi = req.body.salsal;
+    var cc = req.body.salalw;
+    var aa = req.body.saldedc;
+
+    db.any("select * from  fn_updsalaryinfo_byfacid($1,$2,$3,$4)", [i, fi, cc, aa]).then(() => {
+        res.send({ "message": "update is sucesss" });
+    })
+    pgp.end()
+})
+
+// get salary payment by school id
+router.get('/salpay/school/:schlid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.schlid
+    db.any('select * from fn_Get_salarypaymentbyschool($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// get salary payment by branch id
+router.get('/salpay/branch/:brnhid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnhid
+    db.any('select * from fn_Get_salarypaymentbybranch($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// get salary payment by faculty id
+router.get('/salpay/faculty/:facltyid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.facltyid
+    db.any('select * from fn_Get_salarypaymentbyfaculty($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+
+// insert into salary payment master
+router.post('/salpay', (req, res, next) => {
+    var db = pgp(cs);
+    a = req.body.salfid;
+    b = req.body.salpyamt;
+    c = req.body.salpydt;
+    d = req.body.salpydu;
+    e = req.body.salpyal;
+    f = req.body.salpyded;
+    g = req.body.salpybns;
+    h = req.body.salpyalldtls;
+    i = req.body.remark;
+    db.none('select * from fn_add_salarypayment($1,$2,$3,$4,$5,$6,$7,$8,$9)', [a,b, c, d, e, f, g, h, i]).then(() => {
+        res.send({ message: 'record Inserted Successfully...' })
+    })
+    pgp.end();
+})
+
+
+// update salary payment by faculty id
+ router.put('/salpay/faculty/:salfid', (req, res, next) => {
+    var db = pgp(cs);
+    var pi = req.params.salfid;
+    
+    b = req.body.salpyamt;
+    c = req.body.salpydt;
+    d = req.body.salpydu;
+    e = req.body.salpyal;
+    f = req.body.salpyded;
+    g = req.body.salpybns;
+    h = req.body.salpyalldtls;
+    i = req.body.remark;
+    db.none("select * from fn_update_salarypaymentbyfaculty($1, $2, $3, $4, $5, $6, $7, $8, $9)", [pi,b, c, d, e, f, g, h, i]).then(() => {
+            res.send({message:'Updated Success'});
+        })
+        pgp.end();
+}) 
+
+//get studentmarks by studentid ......
+router.get('/studmarks/student/:studentid', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.studentid;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from fn_getbyid_studentmarks($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end(); 
+})
+//get studentmarks by class id...
+router.get('/studmarks/class/:clasid', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.clasid;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from fn_Get_studentmarksbyclass($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end(); 
+
+})
+//get studentmarks by section id ....
+router.get('/studmarks/section/:sctid', (req, res, next) => {
+    var db = pgp(cs);
+    var i= req.params.sctid;
+    console.log(i);
+    console.log('displaying...................');
+    db.any('select * from fn_Get_studentmarksbysection($1)', i).then(function (data) {
+        res.send(data);
+    })
+    pgp.end(); 
+    
+})
+
+
+
+/************************************************* team4 end**************************************** */
+
 module.exports = router;

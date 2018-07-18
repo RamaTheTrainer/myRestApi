@@ -22,7 +22,7 @@ router.get('/bus/:bid', (req, res, next) => {
 
     var db = pgp(cs);
     var i = (req.params.bid);
-    db.any(' select * from fn_getbyid_businfo($1)', i).then((data) => {
+    db.any(' select * from fn_getbusinfo_bybusid($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
@@ -42,7 +42,7 @@ router.get('/ach/student/:stdid', (req, res, next) => {
 router.get('/timetable/class/:classid',(req,res,next)=>{
     var db=pgp(cs)
     cid=req.params.classid;
-    db.any('select * from fn_get_timetablebyclass($1)',cid).then((data)=>{
+    db.any('select * from fn_gettimetables_byclassid($1)',cid).then((data)=>{
         res.send(data)
     })
     pgp.end();
@@ -220,6 +220,8 @@ router.get('/feeinfo/school/:fschid', (req, res, next) => {
     })
     pgp.end()
 })
+
+
 
 
 

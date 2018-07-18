@@ -27,13 +27,14 @@ db.any('select * from fn_add_leaves($1,$2,$3,$4)',[usid,from,to,stat]).then(()=>
     })
     pgp.end();  
 })
-//put using userid
 
+
+//to Update the status of the Leaves using userId
 router.put('/leaves/user/:usrid',(req,res,next)=>{
     var db=pgp(cs)
     usid=req.params.usrid;
     stat=req.body.sta;
-db.any('select * from fn_updbyuserid_leaves($1,$2)',[usid,stat]).then(()=>{
+db.any('select * from fn_updleavesbyuserid($1,$2)',[usid,stat]).then(()=>{
         res.send("Updated Successfully")
     })
     pgp.end();
@@ -43,16 +44,18 @@ db.any('select * from fn_updbyuserid_leaves($1,$2)',[usid,stat]).then(()=>{
 router.get('/timetable/school/:schid',(req,res,next)=>{
     var db=pgp(cs)
     sid=req.params.schid;
-    db.any('select * from fn_getbyschid_timetables($1)',sid).then((data)=>{
+    db.any('select * from fn_gettimetables_byschid($1)',sid).then((data)=>{
         res.send(data)
     })
     pgp.end();
 })
-//get time table by brn id
+
+
+//get timetable by brn_id
 router.get('/timetable/branch/:bid',(req,res,next)=>{
     var db=pgp(cs)
     id=req.params.bid;
-    db.any('select * from fn_getbybrnidtimetables($1)',id).then((data)=>{
+    db.any('select * from fn_gettimetables_bybrnid($1)',id).then((data)=>{
         res.send(data)
     })
     pgp.end();
@@ -61,7 +64,7 @@ router.get('/timetable/branch/:bid',(req,res,next)=>{
 router.get('/timetable/class/:classid',(req,res,next)=>{
     var db=pgp(cs)
     cid=req.params.classid;
-    db.any('select * from fn_get_timetablebyclass($1)',cid).then((data)=>{
+    db.any('select * from fn_gettimetables_byclassid($1)',cid).then((data)=>{
         res.send(data)
     })
     pgp.end();

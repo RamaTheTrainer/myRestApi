@@ -17,6 +17,15 @@ var cs = 'postgres://postgres:root@192.168.0.238:5432/infobyt'
 
 
 /***************************Team @ 2 start**************************** */
+//getting particular school using school id
+
+router.get('/school/:schid', (req, res, next) => {
+    var i =req.params.schid;
+    db.any('select * from fn_school_getbyid($1)', [i])
+        .then((data) => {
+            res.send(data);
+        })
+})
 //getting particular userid from users table
 router.get('/users/user/:usrid', (req, res, next) => {
     var t=req.params.usrid;
@@ -24,8 +33,8 @@ router.get('/users/user/:usrid', (req, res, next) => {
         res.send(data);
     })
 }) 
-//get brnid in users by userbranchtable//
 
+//get brnid in users by userbranchtable//
 router.get('/users/branch/:brnid', (req, res, next) => {
     var t=req.params.brnid;
     db.any('select * from fn_Get_byuserbranchmaster($1)',[t]).then(function (data) {
@@ -33,32 +42,33 @@ router.get('/users/branch/:brnid', (req, res, next) => {
     })
 }) 
 
-//get by branch id
+
+//get transport routes by branch id
 router.get('/transroute/branch/:brnid', (req, res, next) => {
     var db = pgp(cs)
     bid = req.params.brnid;
-    db.any('select * from fn_getbybrnchid_transportroute($1)', bid).then((data) => {
+    db.any('select * from fn_gettransportroutes_bybrnchid($1)', bid).then((data) => {
         res.send(data)
     })
     pgp.end();
 })
 
-/* get by route bus id */
+/* get transport route details by route bus id */
 
 router.get('/transroute/routebus/:rbusid', (req, res, next) => {
     var db = pgp(cs)
     bid = req.params.rbusid;
-    db.any('select * from fn_getbyroutebusid($1)', bid).then((data) => {
+    db.any('select * from fn_gettransportroutes_byroutebusid($1)', bid).then((data) => {
         res.send(data)
     })
     pgp.end();
 })
 
-/* get By routeId */
+/* get transport route details By routeId */
 router.get('/transroute/route/:rid', (req, res, next) => {
     var db = pgp(cs)
     bid = req.params.rid;
-    db.any('select * from fn_getbyrouteid($1)', bid).then((data) => {
+    db.any('select * from fn_gettransportroutes_byrouteid($1)', bid).then((data) => {
         res.send(data)
     })
     pgp.end();
@@ -83,44 +93,44 @@ router.put('/transroute/route/:rid', (req, res, next) => {
     from = req.body.rfrom;
     to = req.body.rto;
     busid = req.body.rbusid;
-    db.any('select * from fn_updbyrouteid($1,$2,$3,$4,$5)', [id, name, from, to, busid]).then(() => {
+    db.any('select * from fn_updtransportroutes_byrouteid($1,$2,$3,$4,$5)', [id, name, from, to, busid]).then(() => {
         res.send("Updated Successfully")
     })
     pgp.end();
 })
 
-//stop route using branch id
+//transport stop details using branch id
 router.get('/transportstop/branch/:brnchid',(req,res,next)=>{
     var db = pgp(cs)
     bid = req.params.brnid;
-    db.any('select * from fn_getbybrnchid_transportstop($1)', bid).then((data) => {
+    db.any('select * from fn_gettransportstop_bybrnchid($1)', bid).then((data) => {
         res.send(data)
     })
     pgp.end();
     
 })
 
-/* get by stop route id */
+/* get transport stop details by stop route id */
 
 router.get('/transportstop/sroute/:strid', (req, res, next) => {
     var db = pgp(cs)
     id = req.params.strid;
-    db.any('select * from fn_getbystoprouteid($1)', id).then((data) => {
+    db.any('select * from fn_gettransportstop_bystoprouteid($1)', id).then((data) => {
         res.send(data)
     })
     pgp.end();
 })
 
-/* get By stopId */
+/* get transport stop details By stopId */
 router.get('/transportstop/stop/:sid', (req, res, next) => {
     var db = pgp(cs)
     id = req.params.sid;
-    db.any('select * from fn_getbystopid($1)', id).then((data) => {
+    db.any('select * from fn_gettransportstop_bystopid($1)', id).then((data) => {
         res.send(data)
     })
     pgp.end();
 })
-//Adding the transport info
+//Adding the transport stop info
 router.post('/transportstop',(req,res,next)=>{
     var db=pgp(cs);
     name=req.body.stname;
@@ -133,7 +143,7 @@ router.post('/transportstop',(req,res,next)=>{
     pgp.end();
 })
 
-//Updating the transport info by route id
+//Updating the transport stop info by route id
 router.put('/transportstop/stop/:stid',(req,res,next)=>{
     var db=pgp(cs)
     id=req.params.stid;
@@ -141,44 +151,38 @@ router.put('/transportstop/stop/:stid',(req,res,next)=>{
     details=req.body.stdetails;
     chrg=req.body.stchrg;
     routid=req.body.stroutid;
-db.any('select * from fn_updbystopid($1,$2,$3,$4,$5)',[id,name,details,chrg,routid]).then(()=>{
+db.any('select * from fn_updtransportstop_bystopid($1,$2,$3,$4,$5)',[id,name,details,chrg,routid]).then(()=>{
         res.send("Updated Successfully")
     })
     pgp.end();
 })
 
 
-//to return school get by branchid
+//to return schoolbranch details by branchid
 router.get('/schbrn/branch/:brnid', (req, res, next) => {
 
     var db = pgp(cs);
 
     var i = (req.params.brnid);
 
-    db.any(' select * from fn_getbyid_schoolbranch($1)', i).then((data) => {
+    db.any(' select * from fn_getschoolbranch_bybranchid_($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
 })
 
-//to return all branch get by schoolbranch_id
+//to return all branch details by school_id
 router.get('/schbrn/school/:brnschid', (req, res, next) => {
 
     var db = pgp(cs);
 
     var i = (req.params.brnschid);
 
-    db.any(' select * from fn_getbybrnschid_schoolbranch($1)', i).then((data) => {
+    db.any(' select * from fn_getschoolbranch_byschid_($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
 })
-
-
-
-
-
-
 
 
 
@@ -215,9 +219,7 @@ router.post('/schbrn', (req, res, next) => {
 router.put('/schbrn/branch/:brnid', (req, res, next) => {
 
     var db = pgp(cs);
-
     var i = (req.params.brnid);
-
     var fnm = req.body.brnfname;
     var lnm = req.body.brnlname;
     var sch = req.body.brnschid;
@@ -232,7 +234,7 @@ router.put('/schbrn/branch/:brnid', (req, res, next) => {
     var img = req.body.brnimage;
 
 
-    db.any("select * from fn_update_schoolbranch ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
+    db.any("select * from fn_updschoolbranch_bybranchid ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
         [i, fnm, lnm, sch, cun, st, cty, adl, con1, con2, dat, stu, img])
         .then(() => {
             res.send({ "message": "update is sucesss" });
@@ -242,36 +244,36 @@ router.put('/schbrn/branch/:brnid', (req, res, next) => {
 
 
 
-//get by user id in userbranch table
+//get userbranch details by user id
 
 router.get('/userbranch/user/:uid',(req,res,next)=>{
     var db=pgp(cs)
     id=req.params.uid;
-    db.any('select * from fn_getbyuserid_userbranch($1)',id).then((data)=>{
+    db.any('select * from fn_getuserbranchinfo_byuserid($1)',id).then((data)=>{
         res.send(data)
     })
     pgp.end();
 })
-//get by branchid in userbranch table
+//get userbranch details by branchid 
 router.get('/userbranch/branch/:brnid',(req,res,next)=>{
     var db=pgp(cs)
     id=req.params.brnid;
-    db.any('select * from fn_getbybrnid_userbranch($1)',id).then((data)=>{
+    db.any('select * from fn_getuserbranch_bybranchid($1)',id).then((data)=>{
         res.send(data)
     })
     pgp.end();
 })
 
-//get by userid in leave master
+//get leaves by userid 
 router.get('/leaves/user/:usrid',(req,res,next)=>{
     var db=pgp(cs)
     usid=req.params.usrid;
-    db.any('select * from fn_getbyuserid_leaves($1)',usid).then((data)=>{
+    db.any('select * from fn_getleavesbyuserid($1)',usid).then((data)=>{
         res.send(data)
     })
     pgp.end();
 })
-//get by branch id in leave master
+//get leaves by branch id 
 router.get('/leaves/branch/:brnid',(req,res,next)=>{
     var db=pgp(cs)
     bid=req.params.brnid;
@@ -285,7 +287,7 @@ router.put('/leaves/user/:usrid',(req,res,next)=>{
     var db=pgp(cs)
     usid=req.params.usrid;
     stat=req.body.sta;
-db.any('select * from fn_updbyuserid_leaves($1,$2)',[usid,stat]).then(()=>{
+db.any('select * from fn_updleavesbyuserid($1,$2)',[usid,stat]).then(()=>{
         res.send("Updated Successfully")
     })
     pgp.end();
@@ -296,7 +298,7 @@ db.any('select * from fn_updbyuserid_leaves($1,$2)',[usid,stat]).then(()=>{
     router.get('/stdparent/user/:usrid',(req,res,next)=>{
         var db=pgp(cs)
         uid=req.params.usrid;
-        db.any('select * from fn_getbyuserid_stdprnt($1)',uid).then((data)=>{
+        db.any('select * from fn_getstdprntinfo_byuserid($1)',uid).then((data)=>{
             res.send(data);
         })
         pgp.end()
@@ -306,7 +308,7 @@ db.any('select * from fn_updbyuserid_leaves($1,$2)',[usid,stat]).then(()=>{
     router.get('/stdparent/student/:sid',(req,res,next)=>{
         var db=pgp(cs)
         id=req.params.sid;
-        db.any('select * from fn_getbystdid_stdprnt($1)',id).then((data)=>{
+        db.any('select * from fn_getstdprntinfo_bystdid($1)',id).then((data)=>{
             res.send(data);
         })
         pgp.end()
@@ -315,30 +317,30 @@ db.any('select * from fn_updbyuserid_leaves($1,$2)',[usid,stat]).then(()=>{
 router.get('/timetable/school/:schid',(req,res,next)=>{
     var db=pgp(cs)
     sid=req.params.schid;
-    db.any('select * from fn_getbyschid_timetables($1)',sid).then((data)=>{
+    db.any('select * from fn_gettimetables_byschid($1)',sid).then((data)=>{
         res.send(data)
     })
     pgp.end();
 })
-//get time table by brn id
+//get timetable by brn id
 router.get('/timetable/branch/:bid',(req,res,next)=>{
     var db=pgp(cs)
     id=req.params.bid;
-    db.any('select * from fn_getbybrnidtimetables($1)',id).then((data)=>{
+    db.any('select * from fn_gettimetables_bybrnid($1)',id).then((data)=>{
         res.send(data)
     })
     pgp.end();
 })
-//get time table by class id
+//get timetable by class id
 router.get('/timetable/class/:classid',(req,res,next)=>{
     var db=pgp(cs)
     cid=req.params.classid;
-    db.any('select * from fn_get_timetablebyclass($1)',cid).then((data)=>{
+    db.any('select * from fn_gettimetables_byclassid($1)',cid).then((data)=>{
         res.send(data)
     })
     pgp.end();
 })
-//adding time table 
+//adding timetable 
 router.post('/timetable',(req,res,next)=>{
     var db=pgp(cs);
         sid=req.body.schid;
@@ -359,7 +361,7 @@ router.post('/timetable',(req,res,next)=>{
         type=req.body.ttype;
         turl=req.body.tturl;
         re=req.body.rem;
-        db.any('select * from fn_updbyschid_timetable($1,$2,$3,$4,$5,$6)',[sid,bid,type,turl,re]).then(()=>{
+        db.any('select * from fn_updtimetables_byschid($1,$2,$3,$4,$5,$6)',[sid,bid,type,turl,re]).then(()=>{
             res.send("Updated Successfully")
         })
         pgp.end();
@@ -371,7 +373,7 @@ router.get('/bus/branch/:busbrnid', (req, res, next) => {
 
     var db = pgp(cs);
     var i = (req.params.busbrnid);
-    db.any(' select * from fn_getbybusbrnid_businfo($1)', i).then((data) => {
+    db.any(' select * from fn_getbusinfo_bybrnid_($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
@@ -383,7 +385,7 @@ router.get('/bus/:bid', (req, res, next) => {
 
     var db = pgp(cs);
     var i = (req.params.bid);
-    db.any(' select * from fn_getbyid_businfo($1)', i).then((data) => {
+    db.any(' select * from fn_getbusinfo_bybusid($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
@@ -416,7 +418,7 @@ router.put('/bus/:busid', (req, res, next) => {
     var reg = req.body.busregnum;
     var dec = req.body.busdescription;
 
-    db.none("select * from fn_updatebybusid_businfo($1,$2,$3,$4)", [i, brid, reg, dec]).then(() => {
+    db.none("select * from fn_updbusinfo_bybusid($1,$2,$3,$4)", [i, brid, reg, dec]).then(() => {
         res.send({ "message": "update is sucesss" });
     })
     pgp.end();

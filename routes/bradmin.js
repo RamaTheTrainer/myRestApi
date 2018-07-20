@@ -17,29 +17,25 @@ var cs = 'postgres://postgres:root@192.168.0.238:5432/infobyt'
 
 
 /***************************Team @ 2 start**************************** */
-//getting particular school using school id
 
-router.get('/school/:schid', (req, res, next) => {
-    var i =req.params.schid;
-    db.any('select * from fn_school_getbyid($1)', [i])
-        .then((data) => {
-            res.send(data);
-        })
-})
 //getting particular userid from users table
 router.get('/users/user/:usrid', (req, res, next) => {
+    var db = pgp(cs)
     var t=req.params.usrid;
     db.any('select * from fn_users_getbyid($1)',[t]).then(function (data) {
         res.send(data);
     })
+    pgp.end();
 }) 
 
 //get brnid in users by userbranchtable//
 router.get('/users/branch/:brnid', (req, res, next) => {
+    var db = pgp(cs)
     var t=req.params.brnid;
     db.any('select * from fn_Get_byuserbranchmaster($1)',[t]).then(function (data) {
         res.send(data);
     })
+    pgp.end();
 }) 
 
 
@@ -47,7 +43,7 @@ router.get('/users/branch/:brnid', (req, res, next) => {
 router.get('/transroute/branch/:brnid', (req, res, next) => {
     var db = pgp(cs)
     bid = req.params.brnid;
-    db.any('select * from fn_gettransportroutes_bybrnchid($1)', bid).then((data) => {
+    db.any('select * from fn_gettransportroutes_bybrnchid($1)',bid).then((data) => {
         res.send(data)
     })
     pgp.end();
@@ -100,10 +96,10 @@ router.put('/transroute/route/:rid', (req, res, next) => {
 })
 
 //transport stop details using branch id
-router.get('/transportstop/branch/:brnchid',(req,res,next)=>{
+router.get('/transportstop/branch/:brnid',(req,res,next)=>{
     var db = pgp(cs)
     bid = req.params.brnid;
-    db.any('select * from fn_gettransportstop_bybrnchid($1)', bid).then((data) => {
+    db.any('select * from fn_gettransportstop_bybrnchid($1)',bid).then((data) => {
         res.send(data)
     })
     pgp.end();
@@ -112,7 +108,7 @@ router.get('/transportstop/branch/:brnchid',(req,res,next)=>{
 
 /* get transport stop details by stop route id */
 
-router.get('/transportstop/sroute/:strid', (req, res, next) => {
+router.get('/transportstop/stroute/:strid', (req, res, next) => {
     var db = pgp(cs)
     id = req.params.strid;
     db.any('select * from fn_gettransportstop_bystoprouteid($1)', id).then((data) => {
@@ -159,26 +155,26 @@ db.any('select * from fn_updtransportstop_bystopid($1,$2,$3,$4,$5)',[id,name,det
 
 
 //to return schoolbranch details by branchid
-router.get('/schbrn/branch/:brnid', (req, res, next) => {
+router.get('/schbranch/branch/:brnid', (req, res, next) => {
 
     var db = pgp(cs);
 
     var i = (req.params.brnid);
 
-    db.any(' select * from fn_getschoolbranch_bybranchid_($1)', i).then((data) => {
+    db.any(' select * from fn_getschoolbranch_bybranchid($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
 })
 
-//to return all branch details by school_id
-router.get('/schbrn/school/:brnschid', (req, res, next) => {
+//to return all branches details by school_id
+router.get('/schbranch/school/:schid', (req, res, next) => {
 
     var db = pgp(cs);
 
-    var i = (req.params.brnschid);
+    var i = (req.params.schid);
 
-    db.any(' select * from fn_getschoolbranch_byschid_($1)', i).then((data) => {
+    db.any(' select * from fn_getschoolbranch_byschid($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
@@ -188,7 +184,7 @@ router.get('/schbrn/school/:brnschid', (req, res, next) => {
 
 
 // to insert new school_branch 
-router.post('/schbrn', (req, res, next) => {
+router.post('/schbranch', (req, res, next) => {
     var db = pgp(cs);
 
 
@@ -216,7 +212,7 @@ router.post('/schbrn', (req, res, next) => {
 
 
 //to update  school_branch by id
-router.put('/schbrn/branch/:brnid', (req, res, next) => {
+router.put('/schbranch/branch/:brnid', (req, res, next) => {
 
     var db = pgp(cs);
     var i = (req.params.brnid);
@@ -354,14 +350,14 @@ router.post('/timetable',(req,res,next)=>{
         pgp.end();
     })
     //updating time table
-    router.put('timetable/school/:schid',(req,res,next)=>{
+    router.put('/timetable/school/:schid',(req,res,next)=>{
         var db=pgp(cs)
         sid=req.params.schid;
         bid=req.body.brnid;
         type=req.body.ttype;
         turl=req.body.tturl;
         re=req.body.rem;
-        db.any('select * from fn_updtimetables_byschid($1,$2,$3,$4,$5,$6)',[sid,bid,type,turl,re]).then(()=>{
+        db.any('select * from fn_updtimetables_byschid($1,$2,$3,$4,$5)',[sid,bid,type,turl,re]).then(()=>{
             res.send("Updated Successfully")
         })
         pgp.end();
@@ -373,7 +369,7 @@ router.get('/bus/branch/:busbrnid', (req, res, next) => {
 
     var db = pgp(cs);
     var i = (req.params.busbrnid);
-    db.any(' select * from fn_getbusinfo_bybrnid_($1)', i).then((data) => {
+    db.any(' select * from fn_getbusinfo_bybrnid($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
@@ -401,7 +397,7 @@ router.post('/bus', (req, res, next) => {
     var reg = req.body.busregnum;
     var dec = req.body.busdescription;
 
-    db.none("select fn_add_businfo($1,$2,$3)", [brid, reg, dec])
+    db.any("select fn_add_businfo($1,$2,$3)", [brid, reg, dec])
         .then(() => {
             res.send({ "message": "insert is  sucessssssssssssss::" });
         })
@@ -418,13 +414,32 @@ router.put('/bus/:busid', (req, res, next) => {
     var reg = req.body.busregnum;
     var dec = req.body.busdescription;
 
-    db.none("select * from fn_updbusinfo_bybusid($1,$2,$3,$4)", [i, brid, reg, dec]).then(() => {
+    db.any("select * from fn_updbusinfo_bybusid($1,$2,$3,$4)", [i, brid, reg, dec]).then(() => {
         res.send({ "message": "update is sucesss" });
     })
     pgp.end();
 })
 
+//to get studentachievements details by using branch id:
+router.get('/ach/branch/:achbrnid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = (req.params.achbrnid);
+    console.log(i)
+    db.any('select * from fn_getachviementsbybrnid($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
+//to getby id achievements details
+router.get('/ach/student/:stdid', (req, res, next) => {
+    var db = pgp(cs);
 
+    var i = (req.params.stdid);
+    db.any('select * from fn_getachievementsbystdid($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
+})
 /***************************Team @ 2 end**************************** */
 
 
@@ -536,7 +551,7 @@ router.get('/classsubject/subject/:subjidd', (req, res, next) => {
         pgp.end();
 })
 //add subject and syllabus details of class subjectmaster
-router.post('/classsubject/class', (req, res, next) => {
+router.post('/classsubject', (req, res, next) => {
     var db = pgp(cs);
     sid = req.body.schidd;
     cid = req.body.clsidd;
@@ -670,8 +685,8 @@ router.post('/schclssec', (req, res, next) => {
     var sectbrnid = req.body.sctbrnidd;
     var sectclsid = req.body.sctclsidd;
     var sectnme = req.body.sctnamee;
-    var sectid = req.body.sctidd;
-    db.any('select fn_Add_ClassSectioninfo($1,$2,$3,$4,$5)', [sectschid, sectbrnid, sectclsid, sectnme, sectid])
+    
+    db.any('select fn_gen_add_schclasssection($1,$2,$3,$4)', [sectschid, sectbrnid, sectclsid, sectnme])
         .then(function () {
             res.status(200).send({ message: "Record Inserted Success.." });
         })
@@ -879,20 +894,52 @@ router.get('/facsubj/subj/:id', (req, res, next) => {
 
 
 /*******************************Team 1 start*************************** */
-
-
-//for getting all bus details 
-router.get('/busmaster', (req, res, next) => {
+/***************getting bus driver allocation details by using driver id****** */
+router.get('/busdriver/driver/:bdadrvid', (req, res, next) => {
     var db = pgp(cs);
 
-    db.any('select * from fn_GetAll_busdrivermaster()').then((data) => {
-        res.send(data);
-    })
-    pgp.end();
+    var i = req.params.bdadrvid
+
+    db.any('select * from fn_Get_busdrivermaster_bybdadrvid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
 })
 
+
+/***************getting bus driver allocation details by using branch id****** */
+router.get('/busdriver/branch/:brn_id', (req, res, next) => {
+    var db = pgp(cs);
+
+    var i = req.params.brn_id
+
+    db.any('select * from fn_Get_busdrivermaster_bybdabrnid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+
+
+/***************getting bus driver allocation details by using school id****** */
+router.get('/busdriver/school/:brnsch_id', (req, res, next) => {
+    var db = pgp(cs);
+
+    var i = req.params.brnsch_id
+
+    db.any('select * from fn_Get_busdrivermaster_bybdaschid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+/************************ */
+
+
+
 //getting  bus details by busid
-router.get('/busmaster/:BdaBusId', (req, res, next) => {
+router.get('/busdriver/bus/:BdaBusId', (req, res, next) => {
     var db = pgp(cs);
 
     var i = req.params.BdaBusId
@@ -906,7 +953,7 @@ router.get('/busmaster/:BdaBusId', (req, res, next) => {
 
 
 // add or allocating the bus driver to bus  
-router.post('/busmaster', (req, res, next) => {
+router.post('/busdriver', (req, res, next) => {
     var db = pgp(cs);
 
     bdid = req .body.a_bdabusid;
@@ -925,7 +972,7 @@ router.post('/busmaster', (req, res, next) => {
 
 
  // updating the bus driver details using bus id
- router.put('/busmaster/:a_bdabusid', (req, res, next) => {
+ router.put('/busdriver/bus/:a_bdabusid', (req, res, next) => {
     var db = pgp(cs);
 
     var i = req.params.a_bdabusid;
@@ -941,22 +988,48 @@ router.post('/busmaster', (req, res, next) => {
 
 //*************************driver information******************************** */
 
-//getting all driver information
-router.get('/driver', (req, res, next) => {
-    var db = pgp(cs);
-    db.any('select * from fn_GetAll_driverinfo()').then((data) => {
-        res.send(data);
-    })
-    pgp.end();
-})
 
 
 // getting  driver details by driver id
-router.get('/driver/:drvid', (req, res, next) => {
+router.get('/driver/driv/:drvid', (req, res, next) => {
     var db = pgp(cs);
     var i = req.params.drvid
 
     db.any('select * from fn_Get_driverinfo_bydrvid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+    pgp.end();
+})
+
+/***********getting driver details by using branch id */
+router.get('/driver/branch/:brn_id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brn_id
+
+    db.any('select * from fn_Get_driverinfo_bydbrnid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+    pgp.end();
+})
+/***************getting driver details by using school id */
+router.get('/driver/school/:brnsch_id', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.brnsch_id
+
+    db.any('select * from fn_Get_driverinfo_bydschid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+    pgp.end();
+})
+/***********getting driver details by using bus id */
+router.get('/driver/bus/:bdabusid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.bdabusid
+
+    db.any('select * from fn_Get_driverinfo_bybusdid($1)', i)
         .then((data) => {
             res.send(data);
         })
@@ -988,7 +1061,7 @@ router.post('/driver', (req, res, next) => {
 
 // updating the driver details by driverid 
 
-router.put('/driver/:drvid', (req, res, next) => {
+router.put('/driver/driv/:drvid', (req, res, next) => {
     var db = pgp(cs);
     var i = req.params.drvid;
 
@@ -1069,7 +1142,7 @@ router.post('/schclass', (req, res, next) => {
 })
 
 // updating class details by class id 
-router.put('/schclass/:c_cid',(req,res,next)=>{
+router.put('/schclass/class/:c_cid',(req,res,next)=>{
     var db = pgp(cs);
     var ci = req.params.c_cid;
     var cn = req.body.c_clsname;
@@ -1094,7 +1167,7 @@ router.get('/student', (req, res, next) => {
 })
 
 // getting student details by student id
-router.get('/student/:stdid', (req, res, next) => { 
+router.get('/student/stud/:stdid', (req, res, next) => { 
     var db = pgp(cs);
     var i = req.params.stdid
     console.log(i)
@@ -1179,7 +1252,7 @@ router.put('/student/:s_stdid',(req,res,next)=>{
     var db = pgp(cs);
     sid =req.params.s_stdid;
     ssid = req.body.s_stdschid;
-    ssbid =req.body.s_stdschbrnid
+    ssbid =req.body.s_stdschbranchid
     sfn = req.body.s_stdfname
     sln = req.body.s_stdlname
     sam = req.body.s_stdadmissionnum
@@ -1259,7 +1332,7 @@ router.post('/subject', (req, res, next) => {
 })
 
 //updating subject details by subject id
-router.put('/student/:s_subjid',(req,res,next)=>{
+router.put('/subject/:s_subjid',(req,res,next)=>{
     var db = pgp(cs);
     var si = req.params.s_subjid
     var sn = req.body.s_subjname;
@@ -1337,17 +1410,10 @@ router.put('/usertransportmaster/:a_utuserid', (req, res, next) => {
 
 
 //*************************user transport pay master***************************** */
-//getting  all usertransport pay details 
-router.get('/usertransportpaymaster', (req, res, next) => {
-    var db=pgp(cs)
-    db.any('select * from fn_GetAll_usertransportpaydetails()').then((data) => {
-        res.send(data);
-    })
-    pgp.end();
-})
+
 
 //getting usertransport  pay details by user transort pay user id
-router.get('/usertransportpaymaster/:id', (req, res, next) => {
+router.get('/usertranspay/user/:id', (req, res, next) => {
     var db=pgp(cs)
     var i = req.params.id
 
@@ -1358,8 +1424,29 @@ router.get('/usertransportpaymaster/:id', (req, res, next) => {
         pgp.end();
 })
 
+/**********getting transportpayment details by using branch id******** */
+router.get('/usertranspay/branch/:stdschbrnid', (req, res, next) => {
+    var db=pgp(cs)
+    var i = req.params.stdschbrnid
+    db.any('select * from fn_Get_usertransportpaydetails_byutpuserBrnid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
+/*************************getting transportpayment details by using school id******* */
+router.get('/usertranspay/school/:stdschid', (req, res, next) => {
+    var db=pgp(cs)
+    var i = req.params.stdschid
+
+    db.any('select * from fn_Get_usertransportpaydetails_byutpuserSchid($1)', i)
+        .then((data) => {
+            res.send(data);
+        })
+        pgp.end();
+})
 //adding usertransport pay details
-router.post('/usertransportpaymaster', (req, res, next) => {
+router.post('/usertranspay', (req, res, next) => {
 
     var db=pgp(cs)
     uid = req.body.a_utpuserid;
@@ -1379,7 +1466,7 @@ router.post('/usertransportpaymaster', (req, res, next) => {
 
 
 //updating user transport pay details by usertransport pay user id
-router.put('/usertransportpaymaster/:utpuserid', (req, res, next) => {
+router.put('/usertranspay/user/:utpuserid', (req, res, next) => {
     var db=pgp(cs)
 
     var i = req.params.utpuserid;
@@ -1407,7 +1494,7 @@ router.post('/holiday', (req, res, next) => {
     var hd=req.body.hldydt;                                                                                                                                                                                                                                                                                                                                      
     var ho=req.body.hldyocc;
 
-   db.none('select * from fn_add_holiday($1, $2, $3,$4)', [si,bi,hd,ho])
+   db.any('select * from fn_add_holiday($1, $2, $3,$4)', [si,bi,hd,ho])
        .then(() => {
            res.send({ "message": "insert is  sucessssssssssssss::" });
        })
@@ -1443,7 +1530,7 @@ router.put('/holiday/school/:hldyshlidid', (req, res, next) => {
    var hb=req.body.hldybrnid;
     var hh=req.body.hldydt;
     var ho=req.body.hldyocc;
-    db.none("select * from fn_update_holiday($1,$2,$3,$4)", [i,hb,hh,ho]).then(() => {
+    db.any("select * from fn_update_holiday($1,$2,$3,$4)", [i,hb,hh,ho]).then(() => {
         res.send({ "message": "update is sucesss" });
     })
     pgp.end()
@@ -1490,7 +1577,7 @@ router.post('/extimetable', (req, res, next) => {
     f = req.body.url;
     g = req.body.exst;
   
-    db.none('select * from fn_add_examtimetable($1,$2,$3,$4,$5,$6,$7)', [a, b, c, d, e,f,g]).then(() => {
+    db.any('select * from fn_add_examtimetable($1,$2,$3,$4,$5,$6,$7)', [a, b, c, d, e,f,g]).then(() => {
         res.send({ message: 'record Inserted Successfully...' })
     })
     pgp.end();
@@ -1508,7 +1595,7 @@ router.post('/extimetable', (req, res, next) => {
     e = req.body.extodt;
     f = req.body.url;
     g = req.body.exst;
-    db.none("select * from fn_update_examtimetablebybranch($1, $2, $3, $4, $5, $6, $7)", [a,pi, c, d, e, f, g]).then(() => {
+    db.any("select * from fn_update_examtimetablebybranch($1, $2, $3, $4, $5, $6, $7)", [a,pi, c, d, e, f, g]).then(() => {
             res.send('Updated Success');
         })
         pgp.end();
@@ -1633,15 +1720,16 @@ router.get('/schfeedback/school/:shlid', (req, res, next) => {
 router.post('/feepayment', (req, res, next) => {
     var db = pgp(cs);
     var ti=req.body.stdid;
-    var pp=req.body.pa;
-    var pi=req.body.pd;
-    var rr=req.body.re;
+    var pp=req.body.pdamt;
+    var pi=req.body.pddt;
+    var rr=req.body.remrk;
 db.any('select * from fn_add_feepayinfo($1, $2, $3,$4)', [ti,pp,pi,rr])
        .then(() => {
            res.send({ "message": "insert is  sucessssssssssssss::" });
        })
        pgp.end()
 })
+
 
 // retrieving feepayment details by using student id //
 router.get('/feepayment/student/:stdid', (req, res, next) => {
@@ -1677,17 +1765,16 @@ router.get('/feepayment/school/:schlid', (req, res, next) => {
 router.put('/feepayment/:stdid', (req, res, next) => {
     var db = pgp(cs);
     var i = req.params.stdid;
-    var pp=req.body.pa;
-    var pi=req.body.pd;
-    var rr=req.body.re;
+    var pp=req.body.pdamt;
+    var pi=req.body.pddt;
+    var rr=req.body.remrk;
    
-   
-   
-    db.none("select * from fn_feepaymentmaster_update($1,$2,$3,$4)", [i,pp,pi,rr]).then(() => {
+    db.any("select * from fn_updatefeepayment($1,$2,$3,$4)", [i,pp,pi,rr]).then(() => {
         res.send({ "message": "update is sucesss" });
     })
     pgp.end()
 })
+
 
 //getting salary details by schoolid
 router.get('/salary/school/:schid', (req, res, next) => {
@@ -1794,7 +1881,7 @@ router.post('/salpay', (req, res, next) => {
     g = req.body.salpybns;
     h = req.body.salpyalldtls;
     i = req.body.remark;
-    db.none('select * from fn_add_salarypayment($1,$2,$3,$4,$5,$6,$7,$8,$9)', [a,b, c, d, e, f, g, h, i]).then(() => {
+    db.any('select * from fn_add_salarypayment($1,$2,$3,$4,$5,$6,$7,$8,$9)', [a,b, c, d, e, f, g, h, i]).then(() => {
         res.send({ message: 'record Inserted Successfully...' })
     })
     pgp.end();
@@ -1814,7 +1901,7 @@ router.post('/salpay', (req, res, next) => {
     g = req.body.salpybns;
     h = req.body.salpyalldtls;
     i = req.body.remark;
-    db.none("select * from fn_update_salarypaymentbyfaculty($1, $2, $3, $4, $5, $6, $7, $8, $9)", [pi,b, c, d, e, f, g, h, i]).then(() => {
+    db.any("select * from fn_update_salarypaymentbyfaculty($1, $2, $3, $4, $5, $6, $7, $8, $9)", [pi,b, c, d, e, f, g, h, i]).then(() => {
             res.send({message:'Updated Success'});
         })
         pgp.end();

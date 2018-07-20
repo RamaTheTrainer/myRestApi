@@ -17,16 +17,36 @@ var cs = 'postgres://postgres:root@192.168.0.238:5432/infobyt'
 
 /* ***************************************team @ 2 start***********************************************/
 
-//to get businfo details by busid 
-router.get('/bus/:bid', (req, res, next) => {
+
+router.post('users/', (req, res, next) => {
+    var u = req.body.uid;
+    db.any('select fn_Add_SchoolAdmin($1)', [u]).then(function () {
+        res.status(200).send({
+            message: "Added succesfully..."
+        });
+    })
+}) 
+//Edit user password using user id
+router.put('/users/user/:usrid', (req, res, next) => {
+    var u = req.params.usrid;
+    var p = req.body.usrpassword;
+    db.any('select * from fn_users_updatepwd($1,$2)', [u,p]).then(function () {
+        res.status(200).send({
+            message: "Updated succesfully..."
+        });
+    })
+})
+//to get businfo details by student id
+router.get('/bus/student/:stdid', (req, res, next) => {
 
     var db = pgp(cs);
-    var i = (req.params.bid);
-    db.any(' select * from fn_getbusinfo_bybusid($1)', i).then((data) => {
+    var i = (req.params.stdid);
+    db.any(' select * from fn_getbusdetails_bystdid($1)', i).then((data) => {
         res.send(data);
     })
     pgp.end();
 })
+
 //to getby id achievements details
 router.get('/ach/student/:stdid', (req, res, next) => {
     var db = pgp(cs);
@@ -186,7 +206,7 @@ router.get('/studfeedback/student/:stuid', (req, res, next) => {
 })
 
 //add facultyfeedback....
-router.post('/facultyfeedback', (req, res, next) => {
+router.post('/facfeedback', (req, res, next) => {
     var db = pgp(cs);
     var i = req.body.uid;
     var fid = req.body.fctyid;

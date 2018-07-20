@@ -18,7 +18,6 @@ var cs = 'postgres://postgres:root@192.168.0.238:5432/infobyt'
 /***************************Team @ 2 start**************************** */
 //Registering the school
 router.post('/school', (req, res, next) => {
-
     nm = req.body.schname;
     ty = req.body.schtype;
     co = req.body.schcountry;

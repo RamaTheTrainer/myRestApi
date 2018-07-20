@@ -93,7 +93,7 @@ router.get('/ach/branch/:achbrnid', (req, res, next) => {
 })
 
 // to insert new achievements details
-router.post('/', (req, res, next) => {
+router.post('/achievements', (req, res, next) => {
     var db = pgp(cs);
 
     var std = req.body.achvstdid;
@@ -330,7 +330,7 @@ router.post('/studmarks', (req, res, next) => {
     pgp.end(); 
 })
 //update studentmarks by student id
-router.put('/studmarks/:studentid', (req, res, next) => {
+router.put('/studmarks/stud/:studentid', (req, res, next) => {
     var db = pgp(cs);
     var st = req.params.studentid;
     var exmtpe = req.body.exmtype;
@@ -375,6 +375,16 @@ router.get('/salary/faculty/:fclty', (req, res, next) => {
         res.send(data);
     })
     pgp.end()
+})
+
+// get salary payment by faculty id
+router.get('/salpay/faculty/:facltyid', (req, res, next) => {
+    var db = pgp(cs);
+    var i = req.params.facltyid
+    db.any('select * from fn_Get_salarypaymentbyfaculty($1)', i).then((data) => {
+        res.send(data);
+    })
+    pgp.end();
 })
 
 /******************************************** TEAM4 END********************************************** */

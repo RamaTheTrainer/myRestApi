@@ -13,11 +13,13 @@ router.use(bodyparser.urlencoded({ extended: true }));
 router.use(bodyparser.json());
 
 var pgp = require('pg-promise')(options)
+
 var cs = 'postgres://postgres:root@192.168.0.238:5432/infobyt'
 /***************************Team @ 2 start**************************** */
 /***************************Team @ 2 start**************************** */
 //Registering the school
 router.post('/school', (req, res, next) => {
+    var db = pgp(cs)
     nm = req.body.schname;
     ty = req.body.schtype;
     co = req.body.schcountry;
@@ -39,14 +41,18 @@ router.post('/school', (req, res, next) => {
     db.any('select * from fn_school_getschid($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)', [nm, ty,co,st,ci,add,con1,con2,im,sta,east,ema,admf,adml,reg]).then(() => {
         res.send({ "message": "record Inserted Successfully..." })
     })
+    pgp.end();
 })
 
 //Login with userid and password
 router.get('/:uid/:pwd', (req, res, next) => {
+    var db = pgp(cs)
+    pgp.end();
     var u=req.params.usrid;
     db.any('select * from  fn_users_get_usrpwdid($1)',[u]).then(function (data) {
         res.send(data);
     })
+    pgp.end()
 })
 
 /***************************Team @ 2 end**************************** */
@@ -54,14 +60,18 @@ router.get('/:uid/:pwd', (req, res, next) => {
 
 //Getting particular school using school id
 router.get('/school/:schid', (req, res, next) => {
+    var db = pgp(cs)
     var i =req.params.schid;
+    console.log(i)
     db.any('select * from fn_school_getbyid($1)', [i])
         .then((data) => {
             res.send(data);
         })
+        pgp.end();
 })
 //Updating the school using school id
 router.put('/school/:schid', (req, res, next) => {
+    var db = pgp(cs)
     i = req.params.schid;
     nm = req.body.schname;
     ty = req.body.schtype;
@@ -83,6 +93,7 @@ router.put('/school/:schid', (req, res, next) => {
         'select * from fn_school_update($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)', [i,nm,ty,co,st,ci,add,con1,con2,im,sta,east,ema,admf,adml,reg]).then(() => {
             res.send({ "message": "Update success.." })
         })
+        pgp.end();
 })
 /***************************Team @ 2 end**************************** */
 

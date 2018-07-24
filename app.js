@@ -3,24 +3,25 @@ var app = express();
 
 var express = require('express');
 var app = express();
-var bradmin = require('./routes/bradmin')
-var sadmin = require('./routes/sadmin')
-var ibadmin = require('./routes/ibadmin')
-var faculty = require('./routes/fauclty')
-var parent = require('./routes/parent')
+
+var classroute = require('./routes/class')
+var school = require('./routes/school')
+var role = require('./routes/role')
+var staff = require('./routes/staff')
+var subject = require('./routes/subject')
+var user = require('./routes/user')
 
 
+app.use('/class', classroute);
+app.use('/role', role);
+app.use('/school', school);
+app.use('/staff', staff);
+app.use('/subject', subject);
+app.use('/user', user);
 
-app.use('/bradmin', bradmin);
-app.use('/sadmin', sadmin);
-app.use('/faculty', faculty);
-app.use('/parent', parent);
-app.use('/ibadmin', ibadmin);
 
 
 app.set('port',process.env.PORT|| 4500)
-
-
 
 app.listen(app.get('port'),(err)=>{
     if(err)
@@ -30,3 +31,5 @@ app.listen(app.get('port'),(err)=>{
         console.log('Server Started http://localhost:'+app.get('port'));
     }
 })
+
+
